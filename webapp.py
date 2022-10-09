@@ -41,16 +41,18 @@ def main():
                 text_set = {"mamode"}
                 if argument in text_set:
                     param_box = st.text_input(argument, key=input_box_unique_id)
+                elif argument == "talib":
+                    param_box = False
+                elif argument == 'offset': 
+                    param_box = 0
                 elif argument not in data_set:
                     param_box = st.number_input(argument, step=1, key=input_box_unique_id)
-                elif argument == "talib": 
-                    list_arg[argument] = False
                 list_arg[argument] = param_box
             list_args[ind_function.__name__] = list_arg #multi indicator
         filename = ticker + "_" + str(amount_of_candles) + "_candles"
         def get_final_dataframe():
             calc_ind(filename, get_candles(ticker, amount_of_candles), col2, list_args)
-        st.button("'Go Go Go'", on_click=get_final_dataframe)
+        st.button("Go Go Go", on_click=get_final_dataframe)
         
 
 
