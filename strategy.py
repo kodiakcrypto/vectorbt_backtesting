@@ -11,6 +11,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
     for ind_name, list_arg in list_args.items():
         for col_name in list_arg:
             if col_name in data_set:
+                tmp_list_args[ind_name] = {}
                 tmp_list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
         
         ind_function = getattr(ta, ind_name)
