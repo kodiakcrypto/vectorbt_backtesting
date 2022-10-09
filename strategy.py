@@ -10,11 +10,8 @@ def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
         for i in list_arg:
             if i in data_set:
                 list_args[ind_name][i] = candle_dataframe[i.title().rstrip("_")]
-
-    # add all indicators to dataframe
-    for indicator in indicators:
-        ind_function = getattr(ta, indicator)
-        candle_dataframe[indicator] = ind_function(**list_arg)
+        ind_function = getattr(ta, ind_name)
+        candle_dataframe[ind_name] = ind_function(**list_arg)
 
     # # # plot data
     with col:
