@@ -14,7 +14,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
         with col: st.write(list_args)
         ind_function = getattr(ta, ind_name)
         candle_dataframe[ind_name] = ind_function(**list_arg)
-        candle_dataframe.index = pd.strptime(candle_dataframe.index, "%Y-%m-%d %H:%M:%S")
+        candle_dataframe.index = candle_dataframe.index.apply(lambda a: pd.to_datetime(a).date())
     # # # plot data
     with col:
         st.write(candle_dataframe)
