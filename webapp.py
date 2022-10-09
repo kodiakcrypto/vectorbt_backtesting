@@ -26,7 +26,7 @@ def main():
         ind_functions = [getattr(ta, ind) for ind in select_ind]
         # st.sidebar.write(ind_function.__doc__)
 
-        list_args = {}
+        list_args = {} #multi indicator
         #list indicator parameter boxes
         for ind_function in ind_functions:
             arguments = inspect.getfullargspec(ind_function)
@@ -35,10 +35,17 @@ def main():
                 name_textin = f"{argument}input"
                 # toggle type of input according to variable. Data will be automatically added, no need to enter infos
                 data_set = {"open_", "high", "low", "close", "volume"}
-                if argument not in data_set:
-                    name_textin = st.number_input(argument, step=1)
+                text_set = {"mamode"}
+                bool_set = {"talib"}
+                if argument in text_set:
+                    name_textin = st.text_input(argument, key=ind_function.__name__+'_'+argument)
+                elif argument in bool_set:
+                    name_textin = st.radio(argument, options=(True, False), key=ind_function.__name__+'_'+argument)
+                elif argument not in data_set:
+                    name_textin = st.number_input(argument, step=1, key=ind_function.__name__+'_'+argument)
+
                 list_arg[argument] = name_textin
-            list_args[ind_function.__name__] = list_arg
+            list_args[ind_function.__name__] = list_arg #multi indicator
 
         get_final_dataframe = lambda *args: calc_ind(get_candles(ticker, amount_of_candles), *args)
         st.button("Submit", on_click=get_final_dataframe, args=(col2, cont, select_ind, list_args))
