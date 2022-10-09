@@ -26,6 +26,7 @@ def main():
         ind_functions = [getattr(ta, ind) for ind in select_ind]
         # st.sidebar.write(ind_function.__doc__)
 
+        list_args = {}
         #list indicator parameter boxes
         for ind_function in ind_functions:
             arguments = inspect.getfullargspec(ind_function)
@@ -37,9 +38,10 @@ def main():
                 if argument not in data_set:
                     name_textin = st.number_input(argument, step=1)
                 list_arg[argument] = name_textin
+            list_args[ind_function.__name__] = list_arg
 
         get_final_dataframe = lambda *args: calc_ind(get_candles(ticker, amount_of_candles), *args)
-        st.button("Submit", on_click=get_final_dataframe, args=(col2, cont, select_ind, list_arg))
+        st.button("Submit", on_click=get_final_dataframe, args=(col2, cont, select_ind, list_args))
         
 
 
