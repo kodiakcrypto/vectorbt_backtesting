@@ -24,23 +24,25 @@ def main():
         indicators = list_ind()
         select_ind = st.multiselect("Choose indicators to apply to data", indicators)
 
-        ind_functions = [getattr(ta, ind) for ind in select_ind]
-        st.write(ind_functions)
-        for ind_function in ind_functions:
-            # get the arguments of the indicator function
-            args = inspect.getfullargspec(ind_function).args
-            # remove the first argument (dataframe)
-            args.pop(0)
-            # create a dict with the arguments as keys and empty values
-            args_dict = {arg: "" for arg in args}
-            # create a dict with the arguments as keys and the values from the user
-            args_dict = st.sidebar.form(key=ind_function.__name__).form_data
-            # add the indicator function name as a key and the args_dict as value to the list_args dict
-            list_args[ind_function.__name__] = args_dict
-
-        # st.sidebar.write(ind_function.__doc__)
 
         list_args = {} #multi indicator
+
+        ind_functions = [getattr(ta, ind) for ind in select_ind]
+        
+        # for ind_function in ind_functions:
+        #     # get the arguments of the indicator function
+        #     args = inspect.getfullargspec(ind_function).args
+        #     # remove the first argument (dataframe)
+        #     args.pop(0)
+        #     # create a dict with the arguments as keys and empty values
+        #     args_dict = {arg: "" for arg in args}
+        #     # create a dict with the arguments as keys and the values from the user
+        #     args_dict = st.sidebar.form(key=ind_function.__name__).form_data
+        #     # add the indicator function name as a key and the args_dict as value to the list_args dict
+        #     list_args[ind_function.__name__] = args_dict
+
+        # # st.sidebar.write(ind_function.__doc__)
+
         #list indicator parameter boxes
         for ind_function in ind_functions:
             arguments = inspect.getfullargspec(ind_function) #get all params needed
@@ -63,7 +65,7 @@ def main():
                 list_arg[argument] = param_box
             list_args[ind_function.__name__] = list_arg #multi indicator
         filename = ticker + "_" + str(amount_of_candles) + "_candles"
-        
+
         def get_final_dataframe():
             candles_dataframe = get_candles(ticker, timeframe, amount_of_candles)
             calc_ind(filename, candles_dataframe, col2, list_args)
