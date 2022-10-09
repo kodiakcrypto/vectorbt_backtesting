@@ -1,9 +1,9 @@
 import pandas_ta as ta
 import streamlit as st
-from pandas import pd
+import pandas as pd
 
 
-def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
+def calc_ind(filename, candle_dataframe, col, list_args):
     data_set = {"open_", "high", "low", "close", "volume"}
 
     # replace value with data[value]
