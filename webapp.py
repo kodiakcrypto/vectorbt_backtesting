@@ -1,3 +1,4 @@
+from email.policy import default
 import streamlit as st
 import pandas_ta as ta
 import pandas as pd
@@ -38,14 +39,12 @@ def main():
                 input_box_unique_id = ind_function.__name__+'_'+argument
                 data_set = {"open_", "high", "low", "close", "volume"}
                 text_set = {"mamode"}
-                bool_set = {"talib"}
                 if argument in text_set:
                     param_box = st.text_input(argument, key=input_box_unique_id)
-                elif argument in bool_set:
-                    param_box = st.radio(argument, options=(True, False), key=input_box_unique_id)
                 elif argument not in data_set:
                     param_box = st.number_input(argument, step=1, key=input_box_unique_id)
-
+                elif argument == "talib": 
+                    list_arg[argument] = False
                 list_arg[argument] = param_box
             list_args[ind_function.__name__] = list_arg #multi indicator
         filename = ticker + "_" + str(amount_of_candles) + "_candles"
