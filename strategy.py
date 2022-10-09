@@ -27,7 +27,7 @@ def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
         #download xlsx
         st.download_button(
             label="⬇️ XLSX",
-            data=candle_dataframe.to_excel().encode("utf-8"),
+            data=candle_dataframe.to_excel(f"{filename}.xlsx"),
             file_name=f"{filename}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             help="Download XLSX Excel file"
