@@ -7,13 +7,17 @@ import pandas as pd
 def calc_ind(filename, candle_dataframe, col, list_args):
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
-    for ind_name, list_arg in list_args.items():
+    for ind_name, list_arg in list_args.copy().items():
+        for arg in list_arg:
+            if arg in ("open_", "high", "low", "close", "volume"):
+                list_arg[arg] = candle_dataframe[ind_name.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
-        res = ind_function(**list_arg)
         candle_dataframe[ind_name] = res
         with col:
             st.write(res)
             # st.write(pd.DataFrame(res, index=candle_dataframe.index))
+        res = ind_function(**list_arg)
+
     # plot data
     with col:
         st.write(candle_dataframe)
