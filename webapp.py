@@ -19,13 +19,13 @@ def main():
         # ticker
         ticker = st.text_input("Ticker", "BTC-USD")
         amount_of_candles = st.number_input("Amount of candles", 100, 100000, 1000)
-
+        timeframe = st.selectbox("Timeframe", ["1m", "5m", "15m", "1h", "4h", "1d", "1w"])
         # List of all indicators
         indicators = list_ind()
         select_ind = st.multiselect("Choose indicators to apply to data", indicators)
 
         ind_functions = [getattr(ta, ind) for ind in select_ind]
-        # st.sidebar.write(ind_function.__doc__)
+        st.sidebar.write(ind_function.__doc__)
 
         list_args = {} #multi indicator
         #list indicator parameter boxes
@@ -43,7 +43,7 @@ def main():
                     param_box = st.text_input(argument, key=input_box_unique_id)
                 elif argument == "talib":
                     param_box = False
-                elif argument == 'offset': 
+                elif argument == 'offset':
                     param_box = 0
                 elif argument not in data_set:
                     param_box = st.number_input(argument, step=1, key=input_box_unique_id)
@@ -51,7 +51,7 @@ def main():
             list_args[ind_function.__name__] = list_arg #multi indicator
         filename = ticker + "_" + str(amount_of_candles) + "_candles"
         def get_final_dataframe():
-            calc_ind(filename, get_candles(ticker, amount_of_candles), col2, list_args)
+            calc_ind(filename, get_candles(ticker, timeframe, amount_of_candles), col2, list_args)
         st.button("Go Go Go", on_click=get_final_dataframe)
         
 

@@ -10,6 +10,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
     for ind_name, list_arg in list_args.items():
         ind_function = getattr(ta, ind_name)
         with col:
+            st.write(ind_function(*list_arg))
             st.write(pd.DataFrame(ind_function(*list_arg), index=candle_dataframe.index))
         candle_dataframe[ind_name] = ind_function(*list_arg)
 
