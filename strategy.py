@@ -10,7 +10,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
     for ind_name, list_arg in list_args.copy().items():
         for arg in list_arg:
             if arg in ("open_", "high", "low", "close", "volume"):
-                list_arg[arg] = candle_dataframe[ind_name.title().rstrip("_")]
+                list_arg[arg] = candle_dataframe[arg.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
         candle_dataframe[ind_name] = res
         with col:
