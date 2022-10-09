@@ -12,7 +12,7 @@ def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
                 list_args[ind_name][i] = candle_dataframe[i.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
         candle_dataframe[ind_name] = ind_function(**list_arg)
-
+        candle_dataframe.index = candle_dataframe.index.dt.tz_localize(None)
     # # # plot data
     with col:
         st.write(candle_dataframe)
