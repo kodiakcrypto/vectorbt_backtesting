@@ -1,0 +1,6 @@
+vectorbt
+yfinance
+numpy
+kaleido
+pandas-ta
+streamlit
