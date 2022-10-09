@@ -21,7 +21,7 @@ def main():
 
         # List of all indicators
         indicators = list_ind()
-        select_ind = st.multiselectbox("Choose indicators to apply to data", indicators)
+        select_ind = st.multiselect("Choose indicators to apply to data", indicators)
 
         ind_function = getattr(ta, select_ind)
         # st.sidebar.write(ind_function.__doc__)
