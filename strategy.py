@@ -1,6 +1,7 @@
 import pandas_ta as ta
 import streamlit as st
-import pandas as pd
+import xlsxwriter
+from io import BytesIO
 
 
 def calc_ind(filename, candle_dataframe, col, list_args):
@@ -30,11 +31,19 @@ def calc_ind(filename, candle_dataframe, col, list_args):
             mime="text/csv",
             help="Download CSV file",
         )
+
         #download xlsx
+        output = BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+        worksheet.write('A1', filename)
+        workbook.close()
+        
         st.download_button(
             label="⬇️ XLSX",
-            data=candle_dataframe.to_excel(f"{filename}.xlsx"),
+            data=output.getvalue(),
             file_name=f"{filename}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            mime="application/vnd.ms-excel",
             help="Download XLSX Excel file"
         )

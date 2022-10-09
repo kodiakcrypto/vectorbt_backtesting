@@ -4,3 +4,4 @@ numpy
 kaleido
 pandas-ta
 streamlit
+xlsxwriter
