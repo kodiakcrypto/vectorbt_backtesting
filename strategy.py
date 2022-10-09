@@ -7,9 +7,9 @@ def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
 
     # replace value with data[value]
     for ind_name, list_arg in list_args.items():
-        for i in list_arg:
-            if i in data_set:
-                list_args[ind_name][i] = candle_dataframe[i.title().rstrip("_")]
+        for col_name in list_arg:
+            if col_name in data_set:
+                list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
         candle_dataframe[ind_name] = ind_function(**list_arg)
         candle_dataframe.index = candle_dataframe.index.dt.tz_localize(None)
