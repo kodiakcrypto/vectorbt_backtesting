@@ -1,5 +1,6 @@
 import pandas_ta as ta
 import streamlit as st
+from pandas import pd
 
 
 def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
@@ -12,7 +13,7 @@ def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
                 list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
         candle_dataframe[ind_name] = ind_function(**list_arg)
-        candle_dataframe.index = candle_dataframe.index.dt.tz_localize(None)
+        candle_dataframe.index = pd.strptime(candle_dataframe.index)
     # # # plot data
     with col:
         st.write(candle_dataframe)
