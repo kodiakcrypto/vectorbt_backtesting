@@ -52,8 +52,9 @@ def main():
                 list_arg[argument] = param_box_label
             list_args[ind_function.__name__] = list_arg #multi indicator
         filename = ticker + "_" + str(amount_of_candles) + "_candles"
-        get_final_dataframe = lambda *args: calc_ind(filename, get_candles(ticker, amount_of_candles), *args)
-        st.button("Submit", on_click=get_final_dataframe, args=(col2, cont, select_ind, list_args))
+        def get_final_dataframe():
+            calc_ind(filename, get_candles(ticker, amount_of_candles), col2, list_args)
+        st.button("Submit", on_click=get_final_dataframe)
         
 
 
