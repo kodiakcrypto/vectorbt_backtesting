@@ -29,20 +29,24 @@ def main():
         list_args = {} #multi indicator
         #list indicator parameter boxes
         for ind_function in ind_functions:
-            arguments = inspect.getfullargspec(ind_function)
+            arguments = inspect.getfullargspec(ind_function) #get all params needed
             list_arg = {}
             for argument in arguments.args:
-                name_textin = f"{argument}input"
+                name_textin = f"{argument}input" #name the input box
                 # toggle type of input according to variable. Data will be automatically added, no need to enter infos
-                data_set = {"open_", "high", "low", "close", "volume"}
-                text_set = {"mamode"}
-                bool_set = {"talib"}
-                if argument in text_set:
-                    name_textin = st.text_input(argument, key=ind_function.__name__+'_'+argument)
-                elif argument in bool_set:
-                    name_textin = st.radio(argument, options=(True, False), key=ind_function.__name__+'_'+argument)
-                elif argument not in data_set:
-                    name_textin = st.number_input(argument, step=1, key=ind_function.__name__+'_'+argument)
+
+                #check what datatype argument is
+                ind_name = ind_function.__name__
+                if type(arguments.defaults[arguments.args.index(argument)]) == int:
+                    name_textin = st.number_input(argument, step=1, key=ind_name+'_'+argument)
+                elif type(arguments.defaults[arguments.args.index(argument)]) == float:
+                    name_textin = st.number_input(argument, step=0.1, key=ind_name+'_'+argument)
+                elif type(arguments.defaults[arguments.args.index(argument)]) == str:
+                    name_textin = st.text_input(argument, key=ind_name+'_'+argument)
+                elif type(arguments.defaults[arguments.args.index(argument)]) == bool:
+                    name_textin = st.checkbox(argument, key=ind_name+'_'+argument)
+                else:
+                    name_textin = st.text_input(argument, key=ind_name+'_'+argument)
 
                 list_arg[argument] = name_textin
             list_args[ind_function.__name__] = list_arg #multi indicator
