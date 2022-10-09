@@ -11,9 +11,11 @@ def calc_ind(filename, candle_dataframe, col, list_args):
         for col_name in list_arg:
             if col_name in data_set:
                 list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
-        with col: st.write(list_args)
+        
         ind_function = getattr(ta, ind_name)
-        candle_dataframe[ind_name] = ind_function(**list_arg)
+        for res in ind_function(**list_arg):
+            with col: st.write(res)
+            # candle_dataframe[ind_name] = res
         candle_dataframe.index = candle_dataframe.index.apply(lambda a: pd.to_datetime(a).date())
     # # # plot data
     with col:
