@@ -37,13 +37,14 @@ def main():
 
                 #check what datatype argument is
                 input_box_unique_id = ind_function.__name__+'_'+argument
-                if type(arguments.defaults[arguments.args.index(argument)]) == int:
+                arg_type = type(argument)
+                if arg_type == int:
                     param_box_label = st.number_input(argument, step=1, key=input_box_unique_id)
-                elif type(arguments.defaults[arguments.args.index(argument)]) == float:
+                elif arg_type == float:
                     param_box_label = st.number_input(argument, step=0.1, key=input_box_unique_id)
-                elif type(arguments.defaults[arguments.args.index(argument)]) == str:
+                elif arg_type == str:
                     param_box_label = st.text_input(argument, key=input_box_unique_id)
-                elif type(arguments.defaults[arguments.args.index(argument)]) == bool:
+                elif arg_type == bool:
                     param_box_label = st.checkbox(argument, key=input_box_unique_id)
                 else:
                     param_box_label = st.text_input(argument, key=input_box_unique_id)
