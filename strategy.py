@@ -2,26 +2,19 @@ import pandas_ta as ta
 import streamlit as st
 import xlsxwriter
 from io import BytesIO
-
+import pandas as pd
 
 def calc_ind(filename, candle_dataframe, col, list_args):
-    data_set = {"open_", "high", "low", "close", "volume"}
+    candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
-    # replace value with data[value]
-    tmp_list_args = {}
     for ind_name, list_arg in list_args.items():
-        for col_name in list_arg:
-            if col_name in data_set:
-                tmp_list_args[ind_name] = {}
-                tmp_list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
-        
         ind_function = getattr(ta, ind_name)
-        with col:st.write(ind_function(**list_arg))
+        with col:
+            st.write(ind_function(**list_arg))
+            st.write(pd.DataFrame(ind_function(**list_arg), index=candle_dataframe.index))
         candle_dataframe[ind_name] = ind_function(**list_arg)
-            # candle_dataframe[ind_name] = res
-        candle_dataframe.index = candle_dataframe.index.tz_localize(None)
-        
-    # # # plot data
+
+    # plot data
     with col:
         st.write(candle_dataframe)
         #download csv of data
