@@ -1,6 +1,5 @@
 import vectorbt as vbt
 import numpy
-import pandas
 
 # get data
 cac_price = vbt.YFData.download(
