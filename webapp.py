@@ -32,26 +32,26 @@ def main():
             arguments = inspect.getfullargspec(ind_function) #get all params needed
             list_arg = {}
             for argument in arguments.args:
-                name_textin = f"{argument}input" #name the input box
+                param_box_label = f"{argument}input" #name the input box
                 # toggle type of input according to variable. Data will be automatically added, no need to enter infos
 
                 #check what datatype argument is
-                ind_name = ind_function.__name__
+                input_box_unique_id = ind_function.__name__+'_'+argument
                 if type(arguments.defaults[arguments.args.index(argument)]) == int:
-                    name_textin = st.number_input(argument, step=1, key=ind_name+'_'+argument)
+                    param_box_label = st.number_input(argument, step=1, key=input_box_unique_id)
                 elif type(arguments.defaults[arguments.args.index(argument)]) == float:
-                    name_textin = st.number_input(argument, step=0.1, key=ind_name+'_'+argument)
+                    param_box_label = st.number_input(argument, step=0.1, key=input_box_unique_id)
                 elif type(arguments.defaults[arguments.args.index(argument)]) == str:
-                    name_textin = st.text_input(argument, key=ind_name+'_'+argument)
+                    param_box_label = st.text_input(argument, key=input_box_unique_id)
                 elif type(arguments.defaults[arguments.args.index(argument)]) == bool:
-                    name_textin = st.checkbox(argument, key=ind_name+'_'+argument)
+                    param_box_label = st.checkbox(argument, key=input_box_unique_id)
                 else:
-                    name_textin = st.text_input(argument, key=ind_name+'_'+argument)
+                    param_box_label = st.text_input(argument, key=input_box_unique_id)
 
-                list_arg[argument] = name_textin
+                list_arg[argument] = param_box_label
             list_args[ind_function.__name__] = list_arg #multi indicator
-
-        get_final_dataframe = lambda *args: calc_ind(get_candles(ticker, amount_of_candles), *args)
+        filename = ticker + "_" + str(amount_of_candles) + "_candles"
+        get_final_dataframe = lambda *args: calc_ind(filename, get_candles(ticker, amount_of_candles), *args)
         st.button("Submit", on_click=get_final_dataframe, args=(col2, cont, select_ind, list_args))
         
 

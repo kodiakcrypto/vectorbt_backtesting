@@ -1,10 +1,8 @@
-import vectorbt as vbt
-import pandas as pd
 import pandas_ta as ta
 import streamlit as st
 
 
-def calc_ind(candle_dataframe, col, container, indicators, list_args):
+def calc_ind(filename, candle_dataframe, col, container, indicators, list_args):
     data_set = {"open_", "high", "low", "close", "volume"}
 
     # replace value with data[value]
@@ -23,8 +21,17 @@ def calc_ind(candle_dataframe, col, container, indicators, list_args):
         st.write(candle_dataframe)
         #download csv of data
         st.download_button(
-            label="Download data",
+            label="⬇️ CSV",
             data=candle_dataframe.to_csv().encode("utf-8"),
-            file_name="data.csv",
+            file_name=f"{filename}.csv",
             mime="text/csv",
+            help="Download CSV file",
+        )
+        #download xlsx
+        st.download_button(
+            label="⬇️ XLSX",
+            data=candle_dataframe.to_excel().encode("utf-8"),
+            file_name=f"{filename}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            help="Download XLSX Excel file"
         )
