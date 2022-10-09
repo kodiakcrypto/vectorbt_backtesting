@@ -16,7 +16,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
                 tmp_list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
         
         ind_function = getattr(ta, ind_name)
-        print(ind_function(**list_arg))
+        with col:st.write(ind_function(**list_arg))
         candle_dataframe[ind_name] = ind_function(**list_arg)
             # candle_dataframe[ind_name] = res
         candle_dataframe.index = candle_dataframe.index.tz_localize(None)
