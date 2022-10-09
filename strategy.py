@@ -7,16 +7,16 @@ def calc_ind(filename, candle_dataframe, col, list_args):
     data_set = {"open_", "high", "low", "close", "volume"}
 
     # replace value with data[value]
+    tmp_list_args = {}
     for ind_name, list_arg in list_args.items():
         for col_name in list_arg:
             if col_name in data_set:
-                list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
+                tmp_list_args[ind_name][col_name] = candle_dataframe[col_name.title().rstrip("_")]
         
         ind_function = getattr(ta, ind_name)
-        for res in ind_function(**list_arg):
-            with col: st.write(res)
+        candle_dataframe[ind_name] = ind_function(**list_arg)
             # candle_dataframe[ind_name] = res
-        candle_dataframe.index = candle_dataframe.index.apply(lambda a: pd.to_datetime(a).date())
+        candle_dataframe.index = candle_dataframe.index.apply(lambda a: pd.to_datetime(a).date().strftime("%Y-%m-%d %H:%M:%S"))
     # # # plot data
     with col:
         st.write(candle_dataframe)
