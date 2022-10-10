@@ -5,3 +5,5 @@ kaleido
 pandas-ta
 streamlit
 xlsxwriter
+git+https://github.com/kodiakcrypto/finlab_crypto@master#egg=finlab_crypto
+ta
