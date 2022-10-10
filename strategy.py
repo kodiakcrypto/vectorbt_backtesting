@@ -26,6 +26,7 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
     # plot data
     with col:
         st.write(candle_dataframe)
+
     _b1, _b2 = st.beta_columns([2,2])
     #download csv of data
     with _b1:
@@ -73,25 +74,26 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
             trail_start = st.number_input('Trail Start', value=None, min_value=None, max_value=None, step=0.001)
             trail_end = st.number_input('Trail End', value=None, min_value=None, max_value=None, step=0.001)
             trail_increment = st.number_input('Trail Increment', value=None, min_value=None, max_value=None, step=0.001)
+        
         # add multi select box to choose dataframe columns to use
-        c1, c2 = st.beta_columns([2,2])
+        c1 = st.beta_columns([2])
         with c1:
             st.write('Select the columns like ATR and RSI to plot below the chart')
             columns = st.multiselect('Column Names', clean_columns)
             separate_panel_indicators = candle_dataframe[columns]
-        with c2:
-            a1, a2, a3 = st.beta_columns([1,1,1])
-            #select column to use for backtest
-            st.write('Select the column to use for backtest')
-            with a1: backtest_column1 = st.selectbox('Column #1', clean_columns)
-            with a2: comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'])
-            with a3: backtest_column2 = st.selectbox('Column #2', clean_columns)
-            comparison_function = getattr(np, comparison_operator)
 
-            #compare these dataframes
-            comparison = candle_dataframe[backtest_column1].astype(float) \
-                            .compare(candle_dataframe[backtest_column2].astype(float), 
-                                comparison_function, keep_shape=True, keep_equal=True)
+        a1, a2, a3 = st.beta_columns([1,1,1])
+        #select column to use for backtest
+        st.write('Select the column to use for backtest')
+        with a1: backtest_column1 = st.selectbox('Column #1', clean_columns)
+        with a2: comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'])
+        with a3: backtest_column2 = st.selectbox('Column #2', clean_columns)
+        comparison_function = getattr(np, comparison_operator)
+
+        #compare these dataframes
+        comparison = candle_dataframe[backtest_column1].astype(float) \
+                        .compare(candle_dataframe[backtest_column2].astype(float), 
+                            comparison_function, keep_shape=True, keep_equal=True)
 
         if st.button('Run Backtest'):
             backtest(
