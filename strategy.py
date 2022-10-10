@@ -13,7 +13,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
                 list_arg[arg] = candle_dataframe[arg.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
         res = ind_function(**list_arg)
-        candle_dataframe = pd.concat(candle_dataframe, res, axis=1)
+        candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
 
     # plot data
     with col:
