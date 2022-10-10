@@ -28,7 +28,7 @@ def main():
         args_dicts = {} #multi indicator
         ind_functions = [getattr(ta, ind) for ind in select_ind]
         if len(ind_functions) > 0: 
-            st.write("Indicator Params")
+            st.write("\n# Indicator Params (leave unchanged to use defaults):")
 
         #list indicator parameter boxes
         for ind_function in ind_functions:
@@ -37,7 +37,7 @@ def main():
             #add separator
             st.sidebar.write("\n# ===========\n")
 
-            st.write(f"\n{ind_function.__name__.title()}")
+            st.write(f"\n## {ind_function.__name__.title()}")
 
             args = inspect.getfullargspec(ind_function).args #get all params needed
             args_dict = {}
