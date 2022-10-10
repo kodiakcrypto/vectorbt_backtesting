@@ -8,7 +8,8 @@ import pandas as pd
 import numpy as np
 
 def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
-
+    
+    _b1, _b2, b1, b2, b3, b4, c1, a1, a2, a3 = st.columns([1,1,1,1,1,1,2,1,1,1])
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
     for ind_name, arg_dict in args_dicts.copy().items():
@@ -27,7 +28,6 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
     with col:
         st.write(candle_dataframe)
 
-    _b1, _b2 = st.beta_columns([2,2])
     #download csv of data
     with _b1:
         st.download_button(
@@ -57,7 +57,6 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
 
     backtest_boxes = st.expander('Backtest Options', expanded=False)
     with backtest_boxes:
-        b1, b2 = st.beta_columns([2,2])
         with b1:
             long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'])
             amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1)
@@ -65,7 +64,6 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
             sl_start = st.number_input('SL Start', value=None, min_value=None, max_value=None, step=0.001)
             sl_end = st.number_input('SL End', value=None, min_value=None, max_value=None, step=0.001)
             sl_increment = st.number_input('SL Increment', value=None, min_value=None, max_value=None, step=0.001)
-        b3, b4 = st.beta_columns([2,2])
         with b3:
             tp_start = st.number_input('TP Start', value=None, min_value=None, max_value=None, step=0.001)
             tp_end = st.number_input('TP End', value=None, min_value=None, max_value=None, step=0.001)
@@ -74,15 +72,12 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
             trail_start = st.number_input('Trail Start', value=None, min_value=None, max_value=None, step=0.001)
             trail_end = st.number_input('Trail End', value=None, min_value=None, max_value=None, step=0.001)
             trail_increment = st.number_input('Trail Increment', value=None, min_value=None, max_value=None, step=0.001)
-        
-        # add multi select box to choose dataframe columns to use
-        c1 = st.beta_columns([2])
         with c1:
+            # add multi select box to choose dataframe columns to use
             st.write('Select the columns like ATR and RSI to plot below the chart')
             columns = st.multiselect('Column Names', clean_columns)
             separate_panel_indicators = candle_dataframe[columns]
 
-        a1, a2, a3 = st.beta_columns([1,1,1])
         #select column to use for backtest
         st.write('Select the column to use for backtest')
         with a1: backtest_column1 = st.selectbox('Column #1', clean_columns)
