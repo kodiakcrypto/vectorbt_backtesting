@@ -58,20 +58,20 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
     backtest_boxes = st.expander('Backtest Options', expanded=False)
     with backtest_boxes:
         with b1:
-            long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'])
+            long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0)
             amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1)
         with b2:
-            sl_start = st.number_input('SL Start', value=None, min_value=None, max_value=None, step=0.001)
-            sl_end = st.number_input('SL End', value=None, min_value=None, max_value=None, step=0.001)
-            sl_increment = st.number_input('SL Increment', value=None, min_value=None, max_value=None, step=0.001)
+            sl_start = st.number_input('SL Start', value=0, min_value=0, max_value=0.5, step=0.001)
+            sl_end = st.number_input('SL End', value=0, min_value=0, max_value=0.5, step=0.001)
+            sl_increment = st.number_input('SL Increment', value=0, min_value=0, max_value=0.5, step=0.001)
         with b3:
-            tp_start = st.number_input('TP Start', value=None, min_value=None, max_value=None, step=0.001)
-            tp_end = st.number_input('TP End', value=None, min_value=None, max_value=None, step=0.001)
-            tp_increment = st.number_input('TP Increment', value=None, min_value=None, max_value=None, step=0.001)
+            tp_start = st.number_input('TP Start', value=0, min_value=0, max_value=0.5, step=0.001)
+            tp_end = st.number_input('TP End', value=0, min_value=0, max_value=0.5, step=0.001)
+            tp_increment = st.number_input('TP Increment', value=0, min_value=0.5, max_value=0, step=0.001)
         with b4:
-            trail_start = st.number_input('Trail Start', value=None, min_value=None, max_value=None, step=0.001)
-            trail_end = st.number_input('Trail End', value=None, min_value=None, max_value=None, step=0.001)
-            trail_increment = st.number_input('Trail Increment', value=None, min_value=None, max_value=None, step=0.001)
+            trail_start = st.number_input('Trail Start', value=0, min_value=0, max_value=0.5, step=0.001)
+            trail_end = st.number_input('Trail End', value=0, min_value=0, max_value=0.5, step=0.001)
+            trail_increment = st.number_input('Trail Increment', value=0, min_value=0, max_value=0.5, step=0.001)
         with c1:
             # add multi select box to choose dataframe columns to use
             st.write('Select the columns like ATR and RSI to plot below the chart')
