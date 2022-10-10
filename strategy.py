@@ -55,7 +55,7 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
         )
 
 
-    backtest_boxes = st.beta_expander('Backtest Options', expanded=False)
+    backtest_boxes = st.expander('Backtest Options', expanded=False)
     with backtest_boxes:
         b1, b2 = st.beta_columns([2,2])
         with b1:
