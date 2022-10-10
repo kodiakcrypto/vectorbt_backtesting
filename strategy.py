@@ -67,7 +67,7 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
         with b3:
             tp_start = st.number_input('TP Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001)
             tp_end = st.number_input('TP End', value=0.0, min_value=0.0, max_value=0.5, step=0.001)
-            tp_increment = st.number_input('TP Increment', value=0.0, min_value=0.5, max_value=0.0, step=0.001)
+            tp_increment = st.number_input('TP Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001)
         with b4:
             trail_start = st.number_input('Trail Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001)
             trail_end = st.number_input('Trail End', value=0.0, min_value=0.0, max_value=0.5, step=0.001)
