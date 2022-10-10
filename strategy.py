@@ -82,7 +82,7 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
 
         #select column to use for backtest
         st.write('#### Backtest Entry Conditions')
-        with a1: backtest_column1 = st.selectbox('Column #1', clean_columns, key='bt_1'))
+        with a1: backtest_column1 = st.selectbox('Column #1', clean_columns, key='bt_1')
         with a2: comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='bt_2')
         with a3: backtest_column2 = st.selectbox('Column #2', clean_columns, key='bt_3')
         
