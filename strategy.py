@@ -4,15 +4,15 @@ import xlsxwriter
 from io import BytesIO
 import pandas as pd
 
-def calc_ind(filename, candle_dataframe, col, list_args):
+def calc_ind(filename, candle_dataframe, col, args_dicts):
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
-    for ind_name, list_arg in list_args.copy().items():
-        for arg in list_arg:
+    for ind_name, arg_dict in args_dicts.copy().items():
+        for arg in arg_dict:
             if arg in ("open_", "high", "low", "close", "volume"):
-                list_args[ind_name][arg] = candle_dataframe[arg.title().rstrip("_")]
+                args_dicts[ind_name][arg] = candle_dataframe[arg.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
-        res = ind_function(**list_arg)
+        res = ind_function(**arg_dict)
         candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
 
     # plot data

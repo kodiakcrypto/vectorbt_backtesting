@@ -20,19 +20,24 @@ def main():
         ticker = st.text_input("Ticker", "BTC-USD")
         amount_of_candles = st.number_input("Amount of candles", 100, 100000, 1000)
         timeframe = st.selectbox("Timeframe", ["1m", "5m", "15m", "1h", "4h", "1d", "1w"], index=3)
+
         # List of all indicators
         indicators = list_ind()
         select_ind = st.multiselect("Choose indicators to apply to data", indicators)
-
+        
         args_dicts = {} #multi indicator
         ind_functions = [getattr(ta, ind) for ind in select_ind]
+        if len(ind_functions) > 0: 
+            st.write("Indicator Params")
 
         #list indicator parameter boxes
         for ind_function in ind_functions:
-            st.sidebar.write(f"### {ind_function.__name__}")
+            st.sidebar.write(f"# {ind_function.__name__} Info")
             st.sidebar.write(ind_function.__doc__)
             #add separator
-            st.sidebar.write("==============================")
+            st.sidebar.write("\n# ===========\n")
+
+            st.write(f"\n{ind_function.__name__.title()}")
 
             args = inspect.getfullargspec(ind_function).args #get all params needed
             args_dict = {}
@@ -42,16 +47,16 @@ def main():
                 input_box_unique_id = ind_function.__name__+'_'+argument
                 data_set = {"open_", "high", "low", "close", "volume"}
                 text_set = {"mamode"}
-                if argument in text_set:
-                    param_box = st.text_input(argument, key=input_box_unique_id)
-                elif argument == "talib":
-                    param_box = False
-                elif argument == 'offset':
-                    param_box = 0
-                elif argument not in data_set:
-                    param_box = st.number_input(argument, step=1, key=input_box_unique_id)
+
+                if argument == "talib": param_box = False
+                elif argument == 'offset': param_box = 0
+                elif argument in text_set: param_box = st.text_input(argument, key=input_box_unique_id)
+                elif argument not in data_set: param_box = st.number_input(argument, step=1, key=input_box_unique_id)
+
                 args_dict[argument] = param_box
+
             args_dicts[ind_function.__name__] = args_dict #multi indicator
+
         filename = f"{ticker}_{timeframe}_{amount_of_candles}_Candles"
         def get_final_dataframe():
             candles_dataframe = get_candles(ticker, timeframe, amount_of_candles)
