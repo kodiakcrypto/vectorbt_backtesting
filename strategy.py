@@ -13,7 +13,7 @@ def calc_ind(filename, candle_dataframe, col, list_args):
                 list_arg[arg] = candle_dataframe[arg.title().rstrip("_")]
         ind_function = getattr(ta, ind_name)
         res = ind_function(**list_arg)
-        candle_dataframe[ind_name] = res
+        # candle_dataframe[ind_name] = res
         with col:
             st.write(res)
             # st.write(pd.DataFrame(res, index=candle_dataframe.index))
