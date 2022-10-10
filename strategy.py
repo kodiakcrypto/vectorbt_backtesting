@@ -9,7 +9,7 @@ import numpy as np
 
 def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
     
-    _b1, _b2, b1, b2, b3, b4, c1, a1, a2, a3, z1, z2, z3 = st.columns([1,1,1,1,1,1,2,1,1,1,1,1,1])
+    b1, b2, b3, b4, c1, a1, a2, a3, z1, z2, z3 = st.columns([1,1,1,1,2,1,1,1,1,1,1])
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
     for ind_name, arg_dict in args_dicts.copy().items():
@@ -28,8 +28,6 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
     with col:
         st.write(candle_dataframe)
 
-    #download csv of data
-    with _b1:
         st.download_button(
             label="⬇️ CSV",
             data=candle_dataframe.to_csv().encode("utf-8"),
@@ -39,14 +37,13 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
             key="csv",
         )
 
-    #download xlsx
-    output = BytesIO()
-    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-    worksheet = workbook.add_worksheet()
+        output = BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
 
-    worksheet.write('A1', filename)
-    workbook.close()
-    with _b2:
+        worksheet.write('A1', filename)
+        workbook.close()
+
         st.download_button(
             label="⬇️ XLSX",
             data=output.getvalue(),
