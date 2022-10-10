@@ -28,50 +28,36 @@ def main():
         ind_functions = [getattr(ta, ind) for ind in select_ind]
 
         for ind_function in ind_functions:
-            # get the arguments of the indicator function
-            args = inspect.getfullargspec(ind_function).args
-            # remove the first argument (dataframe)
-            args.pop(0)
-            # create a dict with the arguments as keys and empty values
-            args_dict = {arg: "" for arg in args}
-            # create a dict with the arguments as keys and the values from the user
-            args_dict = st.sidebar.form(key=ind_function.__name__).form_data
-            # add the indicator function name as a key and the args_dict as value to the args_dicts dict
-            args_dicts[ind_function.__name__] = args_dict
-
-        filename = ticker + "_" + str(amount_of_candles) + "_candles"
-
+            st.sidebar.write(f"### {ind_function.__name__}")
+            st.sidebar.write(ind_function.__doc__)
+            #add separator
+            st.sidebar.write("==============================")
+        #list indicator parameter boxes
+        for ind_function in ind_functions:
+            args = inspect.getfullargspec(ind_function).args #get all params needed
+            args_dict = {}
+            for argument in args:
+                param_box = f"{argument}input" #name the input box
+                
+                # toggle type of input according to variable. Data will be automatically added, no need to enter infos
+                input_box_unique_id = ind_function.__name__+'_'+argument
+                data_set = {"open_", "high", "low", "close", "volume"}
+                text_set = {"mamode"}
+                if argument in text_set:
+                    param_box = st.sidebar.text_input(argument, key=input_box_unique_id)
+                elif argument == "talib":
+                    param_box = False
+                elif argument == 'offset':
+                    param_box = 0
+                elif argument not in data_set:
+                    param_box = st.sidebar.number_input(argument, step=1, key=input_box_unique_id)
+                args_dict[argument] = param_box
+            args_dicts[ind_function.__name__] = args_dict #multi indicator
+        
         def get_final_dataframe():
             candles_dataframe = get_candles(ticker, timeframe, amount_of_candles)
             calc_ind(filename, candles_dataframe, col2, args_dicts)
-        st.form_submit_button("Go Go Go", on_click=get_final_dataframe)
-            
-        # st.sidebar.write(ind_function.__doc__)
-
-        # #list indicator parameter boxes
-        # for ind_function in ind_functions:
-        #     args = inspect.getfullargspec(ind_function).args #get all params needed
-        #     args_dict = {}
-        #     for argument in args:
-        #         param_box = f"{argument}input" #name the input box
-                
-        #         # toggle type of input according to variable. Data will be automatically added, no need to enter infos
-        #         input_box_unique_id = ind_function.__name__+'_'+argument
-        #         data_set = {"open_", "high", "low", "close", "volume"}
-        #         text_set = {"mamode"}
-        #         if argument in text_set:
-        #             param_box = st.text_input(argument, key=input_box_unique_id)
-        #         elif argument == "talib":
-        #             param_box = False
-        #         elif argument == 'offset':
-        #             param_box = 0
-        #         elif argument not in data_set:
-        #             param_box = st.number_input(argument, step=1, key=input_box_unique_id)
-        #         args_dict[argument] = param_box
-        #     args_dicts[ind_function.__name__] = args_dict #multi indicator
-        
-
-        # st.button("Go Go Go", on_click=get_final_dataframe)
+        st.button("Go Go Go", on_click=get_final_dataframe)
         
 
 
