@@ -39,6 +39,13 @@ def main():
             # add the indicator function name as a key and the args_dict as value to the args_dicts dict
             args_dicts[ind_function.__name__] = args_dict
 
+        filename = ticker + "_" + str(amount_of_candles) + "_candles"
+
+        def get_final_dataframe():
+            candles_dataframe = get_candles(ticker, timeframe, amount_of_candles)
+            calc_ind(filename, candles_dataframe, col2, args_dicts)
+        st.form_submit_button("Go Go Go", on_click=get_final_dataframe)
+            
         # st.sidebar.write(ind_function.__doc__)
 
         # #list indicator parameter boxes
@@ -63,12 +70,8 @@ def main():
         #         args_dict[argument] = param_box
         #     args_dicts[ind_function.__name__] = args_dict #multi indicator
         
-        filename = ticker + "_" + str(amount_of_candles) + "_candles"
 
-        def get_final_dataframe():
-            candles_dataframe = get_candles(ticker, timeframe, amount_of_candles)
-            calc_ind(filename, candles_dataframe, col2, args_dicts)
-        st.button("Go Go Go", on_click=get_final_dataframe)
+        # st.button("Go Go Go", on_click=get_final_dataframe)
         
 
 
