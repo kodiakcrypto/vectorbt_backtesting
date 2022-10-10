@@ -27,33 +27,32 @@ def main():
         args_dicts = {} #multi indicator
         ind_functions = [getattr(ta, ind) for ind in select_ind]
 
+        #list indicator parameter boxes
         for ind_function in ind_functions:
             st.sidebar.write(f"### {ind_function.__name__}")
             st.sidebar.write(ind_function.__doc__)
             #add separator
             st.sidebar.write("==============================")
-        #list indicator parameter boxes
-        for ind_function in ind_functions:
+
             args = inspect.getfullargspec(ind_function).args #get all params needed
             args_dict = {}
             for argument in args:
                 param_box = f"{argument}input" #name the input box
-                
                 # toggle type of input according to variable. Data will be automatically added, no need to enter infos
                 input_box_unique_id = ind_function.__name__+'_'+argument
                 data_set = {"open_", "high", "low", "close", "volume"}
                 text_set = {"mamode"}
                 if argument in text_set:
-                    param_box = st.sidebar.text_input(argument, key=input_box_unique_id)
+                    param_box = st.text_input(argument, key=input_box_unique_id)
                 elif argument == "talib":
                     param_box = False
                 elif argument == 'offset':
                     param_box = 0
                 elif argument not in data_set:
-                    param_box = st.sidebar.number_input(argument, step=1, key=input_box_unique_id)
+                    param_box = st.number_input(argument, step=1, key=input_box_unique_id)
                 args_dict[argument] = param_box
             args_dicts[ind_function.__name__] = args_dict #multi indicator
-        
+        filename = f"{ticker}_{timeframe}_{amount_of_candles}_Candles"
         def get_final_dataframe():
             candles_dataframe = get_candles(ticker, timeframe, amount_of_candles)
             calc_ind(filename, candles_dataframe, col2, args_dicts)
