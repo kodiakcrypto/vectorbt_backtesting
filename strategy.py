@@ -9,7 +9,7 @@ import numpy as np
 
 def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
     
-    _b1, _b2, b1, b2, b3, b4, c1, a1, a2, a3 = st.columns([1,1,1,1,1,1,2,1,1,1])
+    _b1, _b2, b1, b2, b3, b4, c1, a1, a2, a3, z1, z2, z3 = st.columns([1,1,1,1,1,1,2,1,1,1,1,1,1])
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
     for ind_name, arg_dict in args_dicts.copy().items():
@@ -79,16 +79,63 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
             separate_panel_indicators = candle_dataframe[columns]
 
         #select column to use for backtest
-        st.write('Select the column to use for backtest')
+        st.write('#### Backtest Entry Conditions')
         with a1: backtest_column1 = st.selectbox('Column #1', clean_columns)
         with a2: comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'])
         with a3: backtest_column2 = st.selectbox('Column #2', clean_columns)
-        comparison_function = getattr(np, comparison_operator)
-
+        
         #compare these dataframes
-        comparison = candle_dataframe[backtest_column1].astype(float) \
-                        .compare(candle_dataframe[backtest_column2].astype(float), 
-                            comparison_function, keep_shape=True, keep_equal=True)
+        entries = None
+        data1, data2 = candle_dataframe[backtest_column1], candle_dataframe[backtest_column2]
+        if comparison_operator == '>':
+            entries = np.greater(data1, data2)
+        elif comparison_operator == '<':
+            entries = np.less(data1, data2)
+        elif comparison_operator == '>=':
+            entries = np.greater_equal(data1, data2)
+        elif comparison_operator == '<=':
+            entries = np.less_equal(data1, data2)
+        elif comparison_operator == '==':
+            entries = np.equal(data1, data2)
+        elif comparison_operator == '-':
+            entries = data1 - data2
+        elif comparison_operator == '+':
+            entries = data1 + data2
+        elif comparison_operator == '*':
+            entries = data1 * data2
+        elif comparison_operator == '/':
+            entries = data1 / data2
+
+
+        st.write('#### Exit Entry Conditions')
+        with a1: ex_backtest_column1 = st.selectbox('Column #1', clean_columns)
+        with a2: ex_comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'])
+        with a3: ex_backtest_column2 = st.selectbox('Column #2', clean_columns)
+        
+        #compare these dataframes
+        exits = None
+        data1, data2 = candle_dataframe[ex_backtest_column1], candle_dataframe[ex_backtest_column2]
+        if ex_comparison_operator == '>':
+            exits = np.greater(data1, data2)
+        elif ex_comparison_operator == '<':
+            exits = np.less(data1, data2)
+        elif ex_comparison_operator == '>=':
+            exits = np.greater_equal(data1, data2)
+        elif ex_comparison_operator == '<=':
+            exits = np.less_equal(data1, data2)
+        elif ex_comparison_operator == '==':
+            exits = np.equal(data1, data2)
+        elif ex_comparison_operator == '-':
+            exits = data1 - data2
+        elif ex_comparison_operator == '+':
+            exits = data1 + data2
+        elif ex_comparison_operator == '*':
+            exits = data1 * data2
+        elif ex_comparison_operator == '/':
+            exits = data1 / data2
+
+
+
 
         if st.button('Run Backtest'):
             backtest(

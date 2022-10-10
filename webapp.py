@@ -28,7 +28,8 @@ def main():
         args_dicts = {} #multi indicator
         ind_functions = [getattr(ta, ind) for ind in select_ind]
         if len(ind_functions) > 0: 
-            st.write("### Indicator Params (leave unchanged to use defaults):")
+            st.write("### Indicator Params")
+            st.write("#### (leave unchanged to use defaults):")
 
         #list indicator parameter boxes
         for ind_function in ind_functions:
