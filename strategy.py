@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 
 def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
+
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
     for ind_name, arg_dict in args_dicts.copy().items():
@@ -18,35 +19,39 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
         res = ind_function(**arg_dict)
         candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
 
+    clean_columns = [column for column in candle_dataframe.columns \
+                if column not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
+                    and type(candle_dataframe[column].iloc[-1]) == np.float64]
+                    
     # plot data
     with col:
         st.write(candle_dataframe)
-        _b1, _b2 = st.beta_columns([2,2])
-        #download csv of data
-        with _b1:
-            st.download_button(
-                label="⬇️ CSV",
-                data=candle_dataframe.to_csv().encode("utf-8"),
-                file_name=f"{filename}.csv",
-                mime="text/csv",
-                help="Download CSV file",
-            )
+    _b1, _b2 = st.beta_columns([2,2])
+    #download csv of data
+    with _b1:
+        st.download_button(
+            label="⬇️ CSV",
+            data=candle_dataframe.to_csv().encode("utf-8"),
+            file_name=f"{filename}.csv",
+            mime="text/csv",
+            help="Download CSV file",
+        )
 
-        #download xlsx
-        output = BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
+    #download xlsx
+    output = BytesIO()
+    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
 
-        worksheet.write('A1', filename)
-        workbook.close()
-        with _b2:
-            st.download_button(
-                label="⬇️ XLSX",
-                data=output.getvalue(),
-                file_name=f"{filename}.xlsx",
-                mime="application/vnd.ms-excel",
-                help="Download XLSX Excel file"
-            )
+    worksheet.write('A1', filename)
+    workbook.close()
+    with _b2:
+        st.download_button(
+            label="⬇️ XLSX",
+            data=output.getvalue(),
+            file_name=f"{filename}.xlsx",
+            mime="application/vnd.ms-excel",
+            help="Download XLSX Excel file"
+        )
 
 
     backtest_boxes = st.beta_expander('Backtest Options', expanded=False)
@@ -68,9 +73,30 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
             trail_start = st.number_input('Trail Start', value=None, min_value=None, max_value=None, step=0.001)
             trail_end = st.number_input('Trail End', value=None, min_value=None, max_value=None, step=0.001)
             trail_increment = st.number_input('Trail Increment', value=None, min_value=None, max_value=None, step=0.001)
+        # add multi select box to choose dataframe columns to use
+        c1, c2 = st.beta_columns([2,2])
+        with c1:
+            st.write('Select the columns like ATR and RSI to plot below the chart')
+            columns = st.multiselect('Column Names', clean_columns)
+            separate_panel_indicators = candle_dataframe[columns]
+        with c2:
+            a1, a2, a3 = st.beta_columns([1,1,1])
+            #select column to use for backtest
+            st.write('Select the column to use for backtest')
+            with a1: backtest_column1 = st.selectbox('Column #1', clean_columns)
+            with a2: comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'])
+            with a3: backtest_column2 = st.selectbox('Column #2', clean_columns)
+            comparison_function = getattr(np, comparison_operator)
+
+            #compare these dataframes
+            comparison = candle_dataframe[backtest_column1].astype(float) \
+                            .compare(candle_dataframe[backtest_column2].astype(float), 
+                                comparison_function, keep_shape=True, keep_equal=True)
+
         if st.button('Run Backtest'):
             backtest(
-                candle_dataframe, timeframe, long_short_both,
+                candle_dataframe, separate_panel_indicators,
+                timeframe, long_short_both,
                 amount_of_candles=amount_of_candles,
                 sl_start=sl_start, sl_end=sl_end, sl_increment=sl_increment,
                 tp_start=tp_start, tp_end=tp_end, tp_increment=tp_increment,
@@ -101,7 +127,7 @@ def strategy(candles_ta_dataframe, separate_panel_indicators):
 
     return entries, exits, figures
 
-def backtest(candles_dataframe, timeframe, long_short_both,
+def backtest(candles_dataframe, separate_panel_indicators, timeframe, long_short_both,
              amount_of_candles=1000,
              sl_start=None, sl_end=None, sl_increment=None,
              tp_start=None, tp_end=None, tp_increment=None,
@@ -122,6 +148,7 @@ def backtest(candles_dataframe, timeframe, long_short_both,
 
     portfolio = strategy.backtest(
         candles_dataframe,
+        separate_panel_indicators,
         _vars,
         plot=True,
         size=1,
