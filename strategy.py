@@ -18,8 +18,8 @@ def calc_ind(candle_dataframe, args_dicts):
     return candle_dataframe
 
 
-@finlab_crypto.Strategy()
-def strategy(candles_ta_dataframe, separate_panel_indicators, entries, exits): 
+@finlab_crypto.Strategy(separate_panel_indicators=None)
+def strategy(candles_ta_dataframe): 
     # give data to chart
     figures = {
       'figures': {
@@ -33,10 +33,10 @@ def strategy(candles_ta_dataframe, separate_panel_indicators, entries, exits):
     }
 
     for col_name in strategy.separate_panel_indicators.columns:
-        figures[col_name] = { col_name: separate_panel_indicators[col_name] }
+        figures[col_name] = { col_name: strategy.separate_panel_indicators[col_name] }
 
-    # entries = candles_ta_dataframe['entries']
-    # exits = candles_ta_dataframe['exits']
+    entries = candles_ta_dataframe['entries']
+    exits = candles_ta_dataframe['exits']
 
     return entries, exits, figures
 
