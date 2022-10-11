@@ -14,7 +14,8 @@ def calc_ind(candle_dataframe, args_dicts):
                 args_dicts[ind_name][arg] = candle_dataframe[arg.rstrip("_")]
         ind_function = getattr(ta, ind_name)
         res = ind_function(**arg_dict)
-        indicator_dict[res.name] = res.columns
+        indicator_dict[ind_name] = res.columns
+        print('RES', ind_name, res.columns)
         candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
     return candle_dataframe, indicator_dict
 

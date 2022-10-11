@@ -95,7 +95,6 @@ def main():
     # Data Fetching #
     #################
     with col1:
-        # ticker
         ticker = st.text_input("Ticker", "BTC-USD")
         amount_of_candles = st.number_input("Amount of candles", 100, 100000, 1000)
         timeframe = st.selectbox("Timeframe", ["1m", "5m", "15m", "1h", "4h", "1d", "1w"], index=3)
@@ -108,7 +107,7 @@ def main():
         ind_functions = [getattr(ta, ind) for ind in select_ind]
         if len(ind_functions) > 0: 
             st.write("### Indicator Params")
-            st.write("(leave unchanged to use defaults):")
+            st.write("ignore 0 and blank boxes to use a default value:")
 
         #list indicator parameter boxes
         for ind_function in ind_functions:
@@ -140,16 +139,13 @@ def main():
 
 
     #######################################
-    # plot dataframe and download buttons #
+    # Plot dataframe and Download buttons #
     #######################################
     if 'candle_dataframe' in st.session_state:
         with col2:
             filename = f"{ticker}_{timeframe}_{amount_of_candles}_candles"
 
             candle_dataframe = st.session_state['candle_dataframe']
-            clean_columns = [column for column in candle_dataframe.columns \
-                                if column not in ['entries', 'exits'] \
-                                    and type(candle_dataframe[column].iloc[-1]) == np.float64]
             st.write(candle_dataframe)
 
             st.download_button(
@@ -178,13 +174,9 @@ def main():
             )
 
 
-
-
-
-
-            ################
-            # BACKTEST BOX #
-            ################
+            #####################
+            # BACKTEST DROPDOWN #
+            #####################
             backtest_boxes = st.expander('Backtest Options', expanded=st.session_state['expanded'])
             with backtest_boxes:
                 st.session_state['expanded'] = True
@@ -208,23 +200,27 @@ def main():
                 trail_end = st.number_input('Trail End', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='trail_end', format="%.3f")
                 trail_increment = st.number_input('Trail Increment', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='trail_increment', format="%.3f")
                 
-                # add multi select box to choose dataframe columns to use
+
+                ##################################################
+                # Choose Columns to plot separately and together #
+                ##################################################
+                clean_columns = [column for column in candle_dataframe.columns \
+                    if column not in ['entries', 'exits'] \
+                        and type(candle_dataframe[column].iloc[-1]) == np.float64]
                 st.write('Select the columns from 1 indicator like ATR and RSI to plot below the chart')
-                columns = st.multiselect('Column Names', [key for key in st.session_state.indicator_dict.keys()], key='clean_cols')
+                columns = st.multiselect('Column Names', clean_columns, key='clean_cols')
                 if st.button('Submit Group as indicator'):
-                    dont_add = False
-                    for indicator in st.session_state.separate_panel_indicators:
-                        if columns == indicator.columns:
-                            dont_add = True #avoid dupes
-                    if not dont_add:
-                        indicator_dataframe = candle_dataframe[columns]
-                        #identify indicator name based on columns
-                        for ind_name, ind_columns in st.session_state.indicator_dict.items():
-                            for col in columns:
-                                if col in ind_columns:
-                                    indicator_dataframe.name = ind_name #name dataframe so figures can be separated
-                                    st.session_state.separate_panel_indicators.append(indicator_dataframe)
-                                    break
+                    # check each chosen column against dict toget indicator name
+                    name_array = []
+                    for ind_name, ind_columns in st.session_state.indicator_dict.items():
+                        for column in columns:
+                            if column in ind_columns and column not in name_array:
+                                name_array.append(ind_name)
+
+                    indicator_dataframe = candle_dataframe[[x for x in columns]]
+                    indicator_dataframe.name = '_'.join(name_array)
+                    st.session_state.separate_panel_indicators.append(indicator_dataframe)
+                    
 
 
 
