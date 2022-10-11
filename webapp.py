@@ -218,6 +218,7 @@ def main():
                     indicator_dataframe = candle_dataframe[[x for x in columns]]
                     indicator_dataframe.name = '_'.join(name_array)
                     st.session_state.separate_panel_indicators.append(indicator_dataframe)
+                    columns.clear()
                     
 
 
@@ -257,7 +258,7 @@ def main():
                 # BACKTEST ZONE #
                 #################
                 if st.button('Run Backtest'):
-                    for i in range(st.session_state.all_entries):
+                    for i in range(st.session_state.entries):
                         entries = operator_to_operation(candle_dataframe[backtest_column1], 
                                                         candle_dataframe[backtest_column2], 
                                                         comparison_operator)
@@ -271,7 +272,7 @@ def main():
                             candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state['all_entries'][i])
                 
 
-                    for i in range(st.session_state.all_exits):
+                    for i in range(st.session_state.exits):
                         exits = operator_to_operation(candle_dataframe[backtest_column1], 
                                                     candle_dataframe[backtest_column2], 
                                                     comparison_operator)
