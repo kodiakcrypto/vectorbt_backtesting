@@ -276,8 +276,8 @@ def main():
 
                     for i in range(st.session_state.exits):
                         exits = operator_to_operation(candle_dataframe[backtest_column1], 
-                                                    candle_dataframe[backtest_column2], 
-                                                    comparison_operator)
+                                                      candle_dataframe[backtest_column2], 
+                                                      comparison_operator)
                         exits.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
                         
                         candle_dataframe['exits'] = exits

@@ -14,10 +14,11 @@ def calc_ind(candle_dataframe, args_dicts):
                 args_dicts[ind_name][arg] = candle_dataframe[arg.rstrip("_")]
         ind_function = getattr(ta, ind_name)
         res = ind_function(**arg_dict)
-        candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
         if isinstance(res, pd.Series):
+            candle_dataframe = pd.concat([candle_dataframe, res], columns=candle_dataframe.columns+=res.columns, axis=1)
             indicator_dict[ind_name] = ind_name
         else:
+            candle_dataframe = pd.concat([candle_dataframe, res], columns=candle_dataframe.columns+=ind_name, axis=1)
             indicator_dict[ind_name] = res.columns
     return candle_dataframe, indicator_dict
 
@@ -25,14 +26,14 @@ def calc_ind(candle_dataframe, args_dicts):
 @finlab_crypto.Strategy(separate_panel_indicators=[])
 def strategy(candles_ta_dataframe): 
     # give data to chart
-    # figures = { 
-    #     'overlaps': { #plot all decimal data columns other than ohlcv
-    #         col_name: candles_ta_dataframe[col_name] \
-    #         for col_name in candles_ta_dataframe.columns \
-    #             if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
-    #             and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
-    #     }
-    # }
+    figures = { 
+        'overlaps': { #plot all decimal data columns other than ohlcv
+            col_name: candles_ta_dataframe[col_name] \
+            for col_name in candles_ta_dataframe.columns \
+                if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
+                and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
+        }
+    }
     # if strategy.separate_panel_indicators != []:
     #     for indicator in strategy.separate_panel_indicators:
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
@@ -40,7 +41,7 @@ def strategy(candles_ta_dataframe):
     entries = candles_ta_dataframe['entries'].to_numpy()
     exits = candles_ta_dataframe['exits'].to_numpy()
 
-    return entries, exits#, figures
+    return entries, exits, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
              timeframe, long_short_both,
