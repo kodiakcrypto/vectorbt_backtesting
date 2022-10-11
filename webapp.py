@@ -26,6 +26,7 @@ def operator_to_operation(data1, data2, comparison_operator):
         data = data1.multiply(data2)
     elif comparison_operator == '/':
         data = data1.divide(data2)
+    st.write(data)
     return data
 
 # Entry input boxes
