@@ -59,8 +59,10 @@ def main():
         st.session_state.expanded = False
     if 'entries' not in st.session_state:
         st.session_state.entries = []
+        st.session_state.all_entries = []
     if 'exits' not in st.session_state:
         st.session_state.exits = []
+        st.session_state.all_exits = []
     
     st.header("Data Downloader")
     col1, col2 = st.columns([2, 3])
@@ -184,10 +186,11 @@ def main():
 
                 #select column to use for backtest
                 st.write('#### Entry Conditions')
-                st.button('# +', key='add_entry_condition', on_click=add_entry_boxes, args=(clean_columns))
-                st.button('# -', key='remove_entry_condition', on_click=remove_entry_box)
+                st.button('+', key='add_entry_condition', on_click=add_entry_boxes, args=(clean_columns))
+                st.button('-', key='remove_entry_condition', on_click=remove_entry_box)
                 
-                if len(st.session_state.entries == 0):
+                st.write(type(st.session_state.entries),st.session_state.entries)
+                if st.session_state.entries == []:
                     add_entry_boxes(clean_columns)
 
                 for i in range(len(st.session_state.entries)):
@@ -205,10 +208,10 @@ def main():
 
 
                 st.write('#### Exit Conditions')
-                st.button('# +', key='add_exit_condition', on_click=add_exit_boxes, args=(clean_columns))
-                st.button('# -', key='remove_exit_condition', on_click=remove_exit_box)
+                st.button('+', key='add_exit_condition', on_click=add_exit_boxes, args=(clean_columns))
+                st.button('-', key='remove_exit_condition', on_click=remove_exit_box)
                 
-                if len(st.session_state.exits == 0):
+                if st.session_state.exits == []:
                     add_exit_boxes(clean_columns)
 
                 for i in range(len(st.session_state.exits)):
