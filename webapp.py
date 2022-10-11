@@ -250,7 +250,7 @@ def main():
                 
                 st.session_state.all_exits = []
                 for i in range(st.session_state.exits):
-                    (backtest_column1, comparison_operator, backtest_column2, combination_operator) = add_exit_boxes(clean_columns, i)
+                    (ex_backtest_column1, ex_comparison_operator, ex_backtest_column2, ex_combination_operator) = add_exit_boxes(clean_columns, i)
                     st.session_state.all_exits.append([backtest_column1, comparison_operator, backtest_column2, combination_operator])
                    
 
@@ -275,18 +275,17 @@ def main():
                         
 
                     for i in range(st.session_state.exits):
-                        exits = operator_to_operation(candle_dataframe[backtest_column1], 
-                                                      candle_dataframe[backtest_column2], 
-                                                      comparison_operator)
-                        exits.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
+                        exits = operator_to_operation(candle_dataframe[ex_backtest_column1], 
+                                                      candle_dataframe[ex_backtest_column2], 
+                                                      ex_comparison_operator)
+                        exits.name = f"{ex_backtest_column1}_{ex_comparison_operator}_{ex_backtest_column2}"
                         
                         candle_dataframe['exits'] = exits
-                        combination_operator = st.session_state.all_exits[i][3]
-                        if combination_operator == 'AND':
+                        ex_combination_operator = st.session_state.all_exits[i][3]
+                        if ex_combination_operator == 'AND':
                             candle_dataframe['exits'] = np.bitwise_and(candle_dataframe['exits'] , st.session_state['all_exits'][i])
-                        elif combination_operator == 'OR':
+                        elif ex_combination_operator == 'OR':
                             candle_dataframe['exits'] = np.bitwise_or(candle_dataframe['exits'] | st.session_state['all_exits'][i])
-                    st.write(candle_dataframe)
 
                     backtest(
                         candle_dataframe, 
