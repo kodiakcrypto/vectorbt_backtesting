@@ -78,7 +78,7 @@ def main():
             args_dicts[ind_function.__name__] = args_dict #multi indicator
 
             
-        with st.button("Go Go Go"):
+        if st.button("Go Go Go"):
             filename = f"{ticker}_{timeframe}_{amount_of_candles}_candles"
             candle_dataframe = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
 
