@@ -184,7 +184,7 @@ def main():
 
                 #select column to use for backtest
                 st.write('#### Entry Conditions')
-                st.button('# +', key='add_entry_condition', onclick=add_entry_boxes, args=(clean_columns)):
+                st.button('# +', key='add_entry_condition', onclick=add_entry_boxes, args=(clean_columns))
                 st.button('# -', key='remove_entry_condition', onclick=remove_entry_box)
                 
                 if len(st.session_state.entries == 0):
@@ -205,7 +205,7 @@ def main():
 
 
                 st.write('#### Exit Conditions')
-                st.button('# +', key='add_exit_condition', onclick=add_exit_boxes, args=(clean_columns)):
+                st.button('# +', key='add_exit_condition', onclick=add_exit_boxes, args=(clean_columns))
                 st.button('# -', key='remove_exit_condition', onclick=remove_exit_box)
                 
                 if len(st.session_state.exits == 0):
@@ -221,7 +221,7 @@ def main():
                     exits = operator_to_operation(candle_dataframe[backtest_column1], 
                                                   candle_dataframe[backtest_column2], 
                                                   comparison_operator)
-                    exits = exits.rename(entry_string)
+                    exits = exits.rename(exit_string)
                     st.session_state.all_exits[i] = exits
 
 
