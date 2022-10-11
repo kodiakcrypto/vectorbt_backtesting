@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from random import randint
 
+# >, <, etc... string to operation on datasets
 def operator_to_operation(data1, data2, comparison_operator):
     if comparison_operator == '>':
         data = data1.gt(data2)
@@ -29,43 +30,59 @@ def operator_to_operation(data1, data2, comparison_operator):
         data = data1.divide(data2)
     return data
 
+# Entry input boxes
 def add_entry_boxes(clean_columns, i):
-    st.session_state['entries'].append([
-            st.selectbox('Column #1', clean_columns, key='entry_column1_'+str(i)), \
-            st.selectbox('Comparison', ['>', '<', '>=', '<=', '-', '+','*','/'], key='entry_comparison_'+str(i)), \
-            st.selectbox('Column #2', clean_columns, key='entry_column2_'+str(i))
-    ])
-    if len(st.session_state.entries) > 1:
-        st.session_state['entries'][-1].append(st.radio('Combine with', ['AND', 'OR'], key='entry_combiner_'+str(i)))
-    return st.session_state['entries'][-1]
+    entry_column1 = st.selectbox('Column #1', clean_columns, key='entry_column1_'+str(i))
+    entry_comparison = st.selectbox('Comparison', ['>', '<', '>=', '<=', '-', '+','*','/'], key='entry_comparison_'+str(i))
+    entry_column2 = st.selectbox('Column #2', clean_columns, key='entry_column2_'+str(i))
+    if i > 1:
+        entry_combiner = st.radio('Combine with', ['AND', 'OR'], key='entry_combiner_'+str(i))
+        return entry_column1, entry_comparison, entry_column2, entry_combiner
+    else:
+        return entry_column1, entry_comparison, entry_column2, None
+def increment_entries():
+    st.session_state.entries += 1
 def remove_entry_box():
-    st.session_state['entries'].remove(-1)
+    st.session_state['entries'] -= 1
 
+# Exit input boxes
 def add_exit_boxes(clean_columns, i):
-    st.session_state['exits'].append([
-        st.selectbox('Column #1', clean_columns, key='exit_column1_'+str(i)), \
-        st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='exit_column1_'+str(i)), \
-        st.selectbox('Column #2', clean_columns, key='exit_column1_'+str(i))
-    ])
-    if len(st.session_state.exits) > 1:
-        st.session_state['exits'][-1].append(st.radio('Combine with', ['AND', 'OR'], key='exit_combiner_'+str(i)))
-        
+    exit_column1 = st.selectbox('Column #1', clean_columns, key='exit_column1_'+str(i))
+    exit_comparison = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='exit_comparison_'+str(i))
+    exit_column2 = st.selectbox('Column #2', clean_columns, key='exit_column2_'+str(i))
+    if i > 1:
+        exit_combiner = st.radio('Combine with', ['AND', 'OR'], key='exit_combiner_'+str(i))
+        return exit_column1, exit_comparison, exit_column2, exit_combiner
+    else:
+        return exit_column1, exit_comparison, exit_column2, None
+def increment_exits():
+    st.session_state.exits += 1
 def remove_exit_box():
-    st.session_state['exits'].remove(-1)
+    st.session_state['exits'] -= 1
 
 def main():
-    if 'expanded' not in st.session_state:
-        st.session_state['expanded'] = False
-    if 'entries' not in st.session_state:
-        st.session_state['entries'] = 0
-        st.session_state['all_entries'] = []
-    if 'exits' not in st.session_state:
-        st.session_state['exits'] = 0
-        st.session_state['all_exits'] = []
-    
     st.header("Data Downloader")
     col1, col2 = st.columns([2, 3])
 
+
+    ##########################
+    # Default variable inits #
+    ##########################
+    if 'expanded' not in st.session_state:
+        st.session_state['expanded'] = False
+    if 'entries' not in st.session_state:
+        st.session_state['entries'] = 1
+        st.session_state['all_entries'] = []
+    if 'exits' not in st.session_state:
+        st.session_state['exits'] = 1
+        st.session_state['all_exits'] = []
+    if 'separate_panel_indicators' not in st.session_state:
+        st.session_state['separate_panel_indicators'] = []
+    
+
+    ###############################
+    # Plot Chart if Backtest Done #
+    ###############################
     if 'portfolio' in st.session_state:
         try:
             st.plotly_chart(st.session_state.portfolio.plot())
@@ -73,6 +90,10 @@ def main():
         except:
             st.write("# Try Again, Backtest Data Missing")
 
+
+    #################
+    # Data Fetching #
+    #################
     with col1:
         # ticker
         ticker = st.text_input("Ticker", "BTC-USD")
@@ -114,11 +135,13 @@ def main():
                 args_dict[argument] = param_box
             args_dicts[ind_function.__name__] = args_dict #multi indicator
 
-            
         if st.button("Go Go Go"):
-            st.session_state['candle_dataframe'] = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
+            (st.session_state['candle_dataframe'], st.session_state['indicator_dict']) = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
 
-    # plot data
+
+    #######################################
+    # plot dataframe and download buttons #
+    #######################################
     if 'candle_dataframe' in st.session_state:
         with col2:
             filename = f"{ticker}_{timeframe}_{amount_of_candles}_candles"
@@ -154,10 +177,21 @@ def main():
                 key="xlsx",
             )
 
+
+
+
+
+
+            ################
+            # BACKTEST BOX #
+            ################
             backtest_boxes = st.expander('Backtest Options', expanded=st.session_state['expanded'])
             with backtest_boxes:
                 st.session_state['expanded'] = True
 
+                ####################
+                # Stoploss TP Zone #
+                ####################
                 long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0, key='long_short_both')
                 amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1, key='amount_of_candles')
 
@@ -175,88 +209,91 @@ def main():
                 trail_increment = st.number_input('Trail Increment', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='trail_increment', format="%.3f")
                 
                 # add multi select box to choose dataframe columns to use
-                st.write('Select the columns like ATR and RSI to plot below the chart')
-                columns = st.multiselect('Column Names', clean_columns, key='clean_cols')
-                separate_panel_indicators = candle_dataframe[columns]
+                st.write('Select the columns from 1 indicator like ATR and RSI to plot below the chart')
+                columns = st.multiselect('Column Names', [key for key in st.session_state.indicator_dict.keys()], key='clean_cols')
+                if st.button('Submit Group as indicator'):
+                    dont_add = False
+                    for indicator in st.session_state.separate_panel_indicators:
+                        if columns == indicator.columns:
+                            dont_add = True #avoid dupes
+                    if not dont_add:
+                        indicator_dataframe = candle_dataframe[columns]
+                        #identify indicator name based on columns
+                        for ind_name, ind_columns in st.session_state.indicator_dict.items():
+                            for col in columns:
+                                if col in ind_columns:
+                                    indicator_dataframe.name = ind_name #name dataframe so figures can be separated
+                                    st.session_state.separate_panel_indicators.append(indicator_dataframe)
+                                    break
 
 
 
 
-
+                ####################
+                # ENTRY CONDITIONS #
+                ####################
                 #select column to use for backtest
                 st.write('#### Entry Conditions')
-                st.button('+', key='add_entry_condition', on_click=add_entry_boxes, args=clean_columns)
+                st.button('+', key='add_entry_condition', on_click=increment_entries)
                 st.button('-', key='remove_entry_condition', on_click=remove_entry_box)
                 
-                st.write(type(st.session_state.entries),st.session_state.entries)
-                if st.session_state.entries == []:
-                    add_entry_boxes(clean_columns)
-
-                for i in range(len(st.session_state.entries)):
-                    backtest_column1 = st.session_state.entries[i][0]
-                    comparison_operator = st.session_state.entries[i][1]
-                    backtest_column2 = st.session_state.entries[i][2]
-
-
-
-
-
-                   
-                    entry_string = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
-                    entries = operator_to_operation(candle_dataframe[backtest_column1], 
-                                                    candle_dataframe[backtest_column2], 
-                                                    comparison_operator)
-                    entries.name = entry_string
-                    st.session_state['all_entries'].append(entries)
-
-
+                # st.write(type(st.session_state.entries),st.session_state.entries)
+                # if st.session_state.entries == []:
+                    
+                st.session_state.all_entries = []
+                for i in range(st.session_state.entries):
+                    (backtest_column1, comparison_operator, backtest_column2), combination_operator = add_entry_boxes(clean_columns, i)
+                    st.session_state.all_entries.append([backtest_column1, comparison_operator, backtest_column2, combination_operator])
+                
+                ###################
+                # EXIT CONDITIONS #
+                ###################
                 st.write('#### Exit Conditions')
-                st.button('+', key='add_exit_condition', on_click=add_exit_boxes, args=clean_columns)
+                st.button('+', key='add_exit_condition', on_click=increment_exits)
                 st.button('-', key='remove_exit_condition', on_click=remove_exit_box)
                 
-                if st.session_state.exits == []:
-                    add_exit_boxes(clean_columns)
-
-                for i in range(len(st.session_state.exits)):
-                    backtest_column1 = st.session_state.exits[i][0]
-                    comparison_operator = st.session_state.exits[i][1]
-                    backtest_column2 = st.session_state.exits[i][2]
-
+                st.session_state.all_exits = []
+                for i in range(st.session_state.exits):
+                    (backtest_column1, comparison_operator, backtest_column2, combination_operator) = add_exit_boxes(clean_columns, i)
+                    st.session_state.all_exits.append([backtest_column1, comparison_operator, backtest_column2, combination_operator])
                    
-                    exit_string = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
-                    exits = operator_to_operation(candle_dataframe[backtest_column1], 
-                                                  candle_dataframe[backtest_column2], 
-                                                  comparison_operator)
-                    exits.name = exit_string
-                    st.session_state['all_exits'].append(exits)
 
 
-
-
-
+                #################
+                # BACKTEST ZONE #
+                #################
                 if st.button('Run Backtest'):
+                    for i in range(st.session_state.all_entries):
+                        entries = operator_to_operation(candle_dataframe[backtest_column1], 
+                                                        candle_dataframe[backtest_column2], 
+                                                        comparison_operator)
+                        entries.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
 
-                    candle_dataframe['entries'] = st.session_state['all_entries'][0]
-                    for i in range(len(st.session_state.entries)):
-                        if len(st.session_state.entries[i]) == 4:
-                            combination_operator = st.session_state.entries[i][3]
-                            if combination_operator == 'AND':
-                                candle_dataframe['entries'] = (candle_dataframe['entries'] & st.session_state['all_entries'][i])
-                            elif combination_operator == 'OR':
-                                candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state['all_entries'][i])
-                    
-                    candle_dataframe['exits'] = st.session_state['all_exits'][0]
-                    for i in range(len(st.session_state.exits)):
-                        if len(st.session_state.exits[i]) == 4:
-                            combination_operator = st.session_state.exits[i][3]
-                            if combination_operator == 'AND':
-                                candle_dataframe['exits'] = (st.session_state['all_exits'][i] & st.session_state['all_exits'][i-1])
-                            elif combination_operator == 'OR':
-                                candle_dataframe['exits'] = (st.session_state['all_exits'][i] | st.session_state['all_exits'][i-1])
+                        candle_dataframe['entries'] = entries
+                        combination_operator = st.session_state.all_entries[i][3]
+                        if combination_operator == 'AND':
+                            candle_dataframe['entries'] = (candle_dataframe['entries'] & st.session_state['all_entries'][i])
+                        elif combination_operator == 'OR':
+                            candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state['all_entries'][i])
+                
+
+                    for i in range(st.session_state.all_exits):
+                        exits = operator_to_operation(candle_dataframe[backtest_column1], 
+                                                    candle_dataframe[backtest_column2], 
+                                                    comparison_operator)
+                        exits.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
+                        
+                        candle_dataframe['exits'] = exits
+                        combination_operator = st.session_state.all_exits[i][3]
+                        if combination_operator == 'AND':
+                            candle_dataframe['exits'] = (candle_dataframe['exits'] & st.session_state['all_exits'][i])
+                        elif combination_operator == 'OR':
+                            candle_dataframe['exits'] = (candle_dataframe['exits'] | st.session_state['all_exits'][i])
+ 
 
                     backtest(
                         candle_dataframe, 
-                        separate_panel_indicators,
+                        st.session_state.separate_panel_indicators,
                         entries, exits, 
                         timeframe, long_short_both,
                         amount_of_candles=amount_of_candles,
