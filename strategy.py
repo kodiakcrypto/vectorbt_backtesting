@@ -39,11 +39,7 @@ def strategy(candles_ta_dataframe):
     #     for indicator in strategy.separate_panel_indicators:
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
-    entries = candles_ta_dataframe['entries']
-    for i in entries.enumerate():
-        st.write(i)
-        break
-         
+    entries = candles_ta_dataframe['entries']        
     exits = candles_ta_dataframe['exits']
     return entries, exits, figures
 
