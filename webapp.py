@@ -286,7 +286,7 @@ def main():
                             candle_dataframe['exits'] = np.bitwise_and(candle_dataframe['exits'] , st.session_state['all_exits'][i])
                         elif combination_operator == 'OR':
                             candle_dataframe['exits'] = np.bitwise_or(candle_dataframe['exits'] | st.session_state['all_exits'][i])
- 
+                    st.write(candle_dataframe)
 
                     backtest(
                         candle_dataframe, 
