@@ -83,7 +83,7 @@ def main():
             candle_dataframe = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
 
     # plot data
-    if candle_dataframe:
+    if candle_dataframe is not None:
         with col2:
             clean_columns = [column for column in candle_dataframe.columns \
                                 if column not in ['entries', 'exits'] \
