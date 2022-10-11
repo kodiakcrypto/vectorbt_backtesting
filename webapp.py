@@ -12,29 +12,27 @@ from random import randint
 
 def operator_to_operation(data1, data2, comparison_operator):
     if comparison_operator == '>':
-        data = np.greater(data1, data2)
+        data = data1 > data2
     elif comparison_operator == '<':
-        data = np.less(data1, data2)
+        data = data1 < data2
     elif comparison_operator == '>=':
-        data = np.greater_equal(data1, data2)
+        data = data1 >= data2
     elif comparison_operator == '<=':
-        data = np.less_equal(data1, data2)
-    elif comparison_operator == '==':
-        data = np.equal(data1, data2)
+        data = (data1 <= data2)
     elif comparison_operator == '-':
-        data = data1 - data2
+        data = (data1 - data2)
     elif comparison_operator == '+':
-        data = data1 + data2
+        data = (data1 + data2)
     elif comparison_operator == '*':
-        data = data1 * data2
+        data = (data1 * data2)
     elif comparison_operator == '/':
-        data = data1 / data2
+        data = (data1 / data2)
     return data
 
 def add_entry_boxes(clean_columns):
     st.session_state['entries'].append([
             st.selectbox('Column #1', clean_columns, key=str(randint(0,999999))), \
-            st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key=str(randint(0,999999))), \
+            st.selectbox('Comparison', ['>', '<', '>=', '<=', '-', '+','*','/'], key=str(randint(0,999999))), \
             st.selectbox('Column #2', clean_columns, key=str(randint(0,999999)))
     ])
     if len(st.session_state.entries) > 1:
@@ -198,11 +196,11 @@ def main():
                     backtest_column2 = st.session_state.entries[i][2]
 
                    
-                    entry_string = f"{backtest_column1} {comparison_operator} {backtest_column2}"
+                    entry_string = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
                     entries = operator_to_operation(candle_dataframe[backtest_column1], 
                                                     candle_dataframe[backtest_column2], 
                                                     comparison_operator)
-                    entries = pd.Series(entries).rename(entry_string)
+                    entries = entries.rename(entry_string)
                     st.session_state['all_entries'].append(entries)
 
 
@@ -219,11 +217,11 @@ def main():
                     backtest_column2 = st.session_state.exits[i][2]
 
                    
-                    exit_string = f"{backtest_column1} {comparison_operator} {backtest_column2}"
+                    exit_string = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
                     exits = operator_to_operation(candle_dataframe[backtest_column1], 
                                                   candle_dataframe[backtest_column2], 
                                                   comparison_operator)
-                    exits = pd.Series(exits).rename(exit_string)
+                    exits = exits.rename(exit_string)
                     st.session_state['all_exits'].append(exits)
 
 
