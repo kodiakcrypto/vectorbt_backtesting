@@ -51,14 +51,17 @@ def backtest(candles_dataframe, separate_panel_indicators,
 
     _vars = {}
     # Get stoploss/takeprofit/trailing stop values
-    if sl_start and sl_end:
-      if not sl_increment: sl_increment = round(sl_end - sl_start, 3)
+    if sl_end:
+      if sl_start is None: sl_start = 0  
+      if not sl_increment: sl_increment = round((sl_end - sl_start)/10, 3)
       _vars['sl_stop'] = np.arange(sl_start, sl_end, sl_increment)
-    if tp_start and tp_end and tp_increment:
-      if not sl_increment: tp_increment = round(sl_end - sl_start, 3)
+    if tp_end:
+      if tp_start is None: tp_start = 0
+      if not tp_increment: tp_increment = round((tp_end - tp_start)/10, 3)
       _vars['tp_stop'] = np.arange(tp_start, tp_end, tp_increment)
-    if trail_start and trail_end and trail_increment:
-      if not sl_increment: trail_increment = round(sl_end - sl_start, 3)
+    if trail_end:
+      if trail_start is None: trail_start = 0
+      if not trail_increment: trail_increment = round((trail_end - trail_start)/10, 3)
       _vars['sl_trail'] = np.arange(trail_start, trail_end, trail_increment)
 
     portfolio = strategy.backtest(
@@ -75,5 +78,5 @@ def backtest(candles_dataframe, separate_panel_indicators,
         amount_of_candles=amount_of_candles,
     )
 
-    st.write(portfolio.stats())
-    st.write(portfolio.plot())
+    # st.write(portfolio.stats())
+    # st.write(portfolio.plot())
