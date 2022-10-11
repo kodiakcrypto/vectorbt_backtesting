@@ -265,7 +265,7 @@ def main():
                         entries.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
 
                         candle_dataframe['entries'] = entries
-                        print(candle_dataframe)
+                        st.write(candle_dataframe)
 
                         combination_operator = st.session_state.all_entries[i][3]
                         if combination_operator == 'AND':
