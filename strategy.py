@@ -14,11 +14,11 @@ def calc_ind(candle_dataframe, args_dicts):
                 args_dicts[ind_name][arg] = candle_dataframe[arg.rstrip("_")]
         ind_function = getattr(ta, ind_name)
         res = ind_function(**arg_dict)
+        candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
         if isinstance(res, pd.Series):
             indicator_dict[ind_name] = ind_name
         else:
             indicator_dict[ind_name] = res.columns
-        candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
     return candle_dataframe, indicator_dict
 
 
@@ -26,18 +26,16 @@ def calc_ind(candle_dataframe, args_dicts):
 def strategy(candles_ta_dataframe): 
     # give data to chart
     figures = {
-      'figures': {
         'overlaps': { #plot all decimal data columns other than ohlcv
-          col_name: candles_ta_dataframe[col_name] \
+            col_name: candles_ta_dataframe[col_name] \
             for col_name in candles_ta_dataframe.columns \
-              if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
+                if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
                 and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
         }
-      }
     }
     # if strategy.separate_panel_indicators != []:
     #     for indicator in strategy.separate_panel_indicators:
-    #         figures['figures'][indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
+    #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
     entries = candles_ta_dataframe['entries']
     exits = candles_ta_dataframe['exits']

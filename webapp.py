@@ -69,10 +69,10 @@ def main():
     if 'expanded' not in st.session_state:
         st.session_state['expanded'] = False
     if 'entries' not in st.session_state:
-        st.session_state['entries'] = 1
+        st.session_state['entries'] = 0
         st.session_state['all_entries'] = []
     if 'exits' not in st.session_state:
-        st.session_state['exits'] = 1
+        st.session_state['exits'] = 0
         st.session_state['all_exits'] = []
     if 'separate_panel_indicators' not in st.session_state:
         st.session_state['separate_panel_indicators'] = []
@@ -265,12 +265,14 @@ def main():
                         entries.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
 
                         candle_dataframe['entries'] = entries
+                        print(candles_dataframe)
+                        
                         combination_operator = st.session_state.all_entries[i][3]
                         if combination_operator == 'AND':
                             candle_dataframe['entries'] = (candle_dataframe['entries'] & st.session_state['all_entries'][i])
                         elif combination_operator == 'OR':
                             candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state['all_entries'][i])
-                
+                        
 
                     for i in range(st.session_state.exits):
                         exits = operator_to_operation(candle_dataframe[backtest_column1], 
