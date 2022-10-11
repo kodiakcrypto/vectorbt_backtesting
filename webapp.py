@@ -56,13 +56,13 @@ def remove_exit_box():
 
 def main():
     if 'expanded' not in st.session_state:
-        st.session_state.expanded = False
+        st.session_state['expanded'] = False
     if 'entries' not in st.session_state:
-        st.session_state.entries = []
-        st.session_state.all_entries = []
+        st.session_state['entries'] = []
+        st.session_state['all_entries'] = []
     if 'exits' not in st.session_state:
-        st.session_state.exits = []
-        st.session_state.all_exits = []
+        st.session_state['exits'] = []
+        st.session_state['all_exits'] = []
     
     st.header("Data Downloader")
     col1, col2 = st.columns([2, 3])
