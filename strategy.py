@@ -41,8 +41,11 @@ def strategy(candles_ta_dataframe):
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
     entries = candles_ta_dataframe['entries']
+    for i in entries.enumerate():
+        st.write(i)
+        break
+         
     exits = candles_ta_dataframe['exits']
-    st.write(entries, exits)
     return entries, exits, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
