@@ -26,19 +26,19 @@ def calc_ind(candle_dataframe, args_dicts):
 def strategy(candles_ta_dataframe): 
     # give data to chart
     # figures = { 
-    #     # 'overlaps': { #plot all decimal data columns other than ohlcv
-    #     #     col_name: candles_ta_dataframe[col_name] \
-    #     #     for col_name in candles_ta_dataframe.columns \
-    #     #         if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
-    #     #         and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
-    #     # }
+    #     'overlaps': { #plot all decimal data columns other than ohlcv
+    #         col_name: candles_ta_dataframe[col_name] \
+    #         for col_name in candles_ta_dataframe.columns \
+    #             if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
+    #             and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
+    #     }
     # }
     # if strategy.separate_panel_indicators != []:
     #     for indicator in strategy.separate_panel_indicators:
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
-    entries = candles_ta_dataframe['entries']
-    exits = candles_ta_dataframe['exits']
+    entries = candles_ta_dataframe['entries'].to_numpy()
+    exits = candles_ta_dataframe['exits'].to_numpy()
 
     return entries, exits#, figures
 
