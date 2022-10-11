@@ -5,7 +5,7 @@ import finlab_crypto
 import pandas as pd
 import numpy as np
 
-def calc_ind(filename, candle_dataframe, timeframe,args_dicts):
+def calc_ind(candle_dataframe, args_dicts):
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
     for ind_name, arg_dict in args_dicts.copy().items():
@@ -19,7 +19,7 @@ def calc_ind(filename, candle_dataframe, timeframe,args_dicts):
 
 
 @finlab_crypto.Strategy()
-def strategy(candles_ta_dataframe, separate_panel_indicators): 
+def strategy(candles_ta_dataframe, separate_panel_indicators, entries, exits): 
     # give data to chart
     figures = {
       'figures': {
@@ -40,8 +40,9 @@ def strategy(candles_ta_dataframe, separate_panel_indicators):
 
     return entries, exits, figures
 
-def backtest(candles_dataframe, entries, exits, 
-             separate_panel_indicators, timeframe, long_short_both,
+def backtest(candles_dataframe, separate_panel_indicators, 
+             entries, exits, 
+             timeframe, long_short_both,
              amount_of_candles=1000,
              sl_start=None, sl_end=None, sl_increment=None,
              tp_start=None, tp_end=None, tp_increment=None,
@@ -63,6 +64,8 @@ def backtest(candles_dataframe, entries, exits,
     portfolio = strategy.backtest(
         candles_dataframe,
         separate_panel_indicators,
+        entries,
+        exits,
         _vars,
         plot=True,
         size=1,
