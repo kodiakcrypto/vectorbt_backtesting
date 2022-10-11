@@ -39,9 +39,10 @@ def strategy(candles_ta_dataframe):
     #     for indicator in strategy.separate_panel_indicators:
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
-    entries = (candles_ta_dataframe['entries'])
-    exits = (candles_ta_dataframe['exits']) 
-
+    # entries = (candles_ta_dataframe['entries']   )
+    # exits = (candles_ta_dataframe['exits']   ) 
+    entries = (candles_ta_dataframe.close > candles_ta_dataframe.close.shift(20) )
+    exits = (candles_ta_dataframe.close < candles_ta_dataframe.close.shift(20))
     return entries, exits, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
