@@ -70,7 +70,7 @@ def backtest(candles_dataframe, separate_panel_indicators,
     portfolio = strategy.backtest(
         candles_dataframe,
         _vars,
-        plot=True,
+        plot=False,
         size=1,
         init_cash='auto', 
         freq=timeframe, 
@@ -79,4 +79,6 @@ def backtest(candles_dataframe, separate_panel_indicators,
     )
 
     st.write(portfolio.stats())
-    # st.write(portfolio.plot())
+    st.plotly_chart(portfolio.plot())
+    st.plotly_chart(portfolio.plotly())
+    st.write(dir(portfolio))
