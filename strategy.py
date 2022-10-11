@@ -27,23 +27,24 @@ def calc_ind(candle_dataframe, args_dicts):
 @finlab_crypto.Strategy(separate_panel_indicators=[])
 def strategy(candles_ta_dataframe): 
     # give data to chart
-    # figures = { 
-    #     'overlaps': { #plot all decimal data columns other than ohlcv
-    #         col_name: candles_ta_dataframe[col_name] \
-    #         for col_name in candles_ta_dataframe.columns \
-    #             if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
-    #             and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
-    #     }
-    # }
+    figures = { 
+        'overlaps': { 
+            'sma 20': candles_ta_dataframe.close.rolling(20).mean() #plot all decimal data columns other than ohlcv
+            # col_name: candles_ta_dataframe[col_name] \
+            # for col_name in candles_ta_dataframe.columns \
+            #     if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
+            #     and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
+        }
+    }
     # if strategy.separate_panel_indicators != []:
     #     for indicator in strategy.separate_panel_indicators:
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
     # entries = (candles_ta_dataframe['entries']   )
     # exits = (candles_ta_dataframe['exits']   ) 
-    entries = None#(candles_ta_dataframe.close > candles_ta_dataframe.close.shift(20) )
-    exits = None#(candles_ta_dataframe.close < candles_ta_dataframe.close.shift(20))
-    return entries, exits, {}#, figures
+    entries = (candles_ta_dataframe.close > candles_ta_dataframe.close.shift(20) )
+    exits = (candles_ta_dataframe.close < candles_ta_dataframe.close.shift(20))
+    return entries, exits, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
              timeframe, long_short_both,
