@@ -34,7 +34,6 @@ def operator_to_operation(data1, data2, comparison_operator):
 def main():
     st.header("Data Downloader")
     candle_dataframe = None
-    expanded = False
     col1, col2 = st.columns([2, 3])
 
     with col1:
@@ -116,9 +115,8 @@ def main():
                 key="xlsx",
             )
 
-            backtest_boxes = st.expander('Backtest Options', expanded=expanded)
+            backtest_boxes = st.expander('Backtest Options', expanded=False)
             with backtest_boxes:
-                expanded = True
 
                 long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0, key='long_short_both')
                 amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1, key='amount_of_candles')
