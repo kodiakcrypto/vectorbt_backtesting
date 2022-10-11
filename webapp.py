@@ -204,7 +204,7 @@ def main():
                                                     candle_dataframe[backtest_column2], 
                                                     comparison_operator)
                     entries = entries.rename(entry_string)
-                    st.session_state.all_entries[i] = entries
+                    st.session_state.all_entries.append(entries)
 
 
                 st.write('#### Exit Conditions')
@@ -225,7 +225,7 @@ def main():
                                                   candle_dataframe[backtest_column2], 
                                                   comparison_operator)
                     exits = exits.rename(exit_string)
-                    st.session_state.all_exits[i] = exits
+                    st.session_state.all_exits.append(exits)
 
 
 
