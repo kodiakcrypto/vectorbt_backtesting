@@ -32,7 +32,7 @@ def strategy(candles_ta_dataframe, separate_panel_indicators, entries, exits):
       }
     }
 
-    for col_name in separate_panel_indicators.columns:
+    for col_name in strategy.separate_panel_indicators.columns:
         figures[col_name] = { col_name: separate_panel_indicators[col_name] }
 
     # entries = candles_ta_dataframe['entries']
@@ -64,11 +64,11 @@ def backtest(candles_dataframe, separate_panel_indicators,
       if not trail_increment: trail_increment = round((trail_end - trail_start)/10, 3)
       _vars['sl_trail'] = np.arange(trail_start, trail_end, trail_increment)
 
+    _vars['separate_panel_indicators'] = separate_panel_indicators
+    candles_dataframe = pd.concat([candles_dataframe, entries, exits], axis=1)
+
     portfolio = strategy.backtest(
         candles_dataframe,
-        separate_panel_indicators,
-        entries,
-        exits,
         _vars,
         plot=True,
         size=1,
@@ -78,5 +78,5 @@ def backtest(candles_dataframe, separate_panel_indicators,
         amount_of_candles=amount_of_candles,
     )
 
-    # st.write(portfolio.stats())
+    st.write(portfolio.stats())
     # st.write(portfolio.plot())
