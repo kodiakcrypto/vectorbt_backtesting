@@ -184,8 +184,8 @@ def main():
 
                 #select column to use for backtest
                 st.write('#### Entry Conditions')
-                st.button('# +', key='add_entry_condition', onclick=add_entry_boxes, args=(clean_columns))
-                st.button('# -', key='remove_entry_condition', onclick=remove_entry_box)
+                st.button('# +', key='add_entry_condition', on_click=add_entry_boxes, args=(clean_columns))
+                st.button('# -', key='remove_entry_condition', on_click=remove_entry_box)
                 
                 if len(st.session_state.entries == 0):
                     add_entry_boxes(clean_columns)
@@ -205,8 +205,8 @@ def main():
 
 
                 st.write('#### Exit Conditions')
-                st.button('# +', key='add_exit_condition', onclick=add_exit_boxes, args=(clean_columns))
-                st.button('# -', key='remove_exit_condition', onclick=remove_exit_box)
+                st.button('# +', key='add_exit_condition', on_click=add_exit_boxes, args=(clean_columns))
+                st.button('# -', key='remove_exit_condition', on_click=remove_exit_box)
                 
                 if len(st.session_state.exits == 0):
                     add_exit_boxes(clean_columns)
