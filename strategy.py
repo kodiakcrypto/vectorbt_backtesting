@@ -25,7 +25,7 @@ def calc_ind(candle_dataframe, args_dicts):
 
 
 @finlab_crypto.Strategy(separate_panel_indicators=[])
-def strategy(candles_ta_dataframe): 
+def strategy(ohlcv): 
     # give data to chart
     # figures = { 
     #     'overlaps': { #plot all decimal data columns other than ohlcv
@@ -41,8 +41,8 @@ def strategy(candles_ta_dataframe):
 
     # entries = (candles_ta_dataframe['entries']   )
     # exits = (candles_ta_dataframe['exits']   ) 
-    entries = (candles_ta_dataframe.close > candles_ta_dataframe.close.shift(20) )
-    exits = (candles_ta_dataframe.close < candles_ta_dataframe.close.shift(20))
+    entries = (ohlcv.close > ohlcv.close.shift(20) )
+    exits = (ohlcv.close < ohlcv.close.shift(20))
     return entries, exits#, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
