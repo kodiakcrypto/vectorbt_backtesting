@@ -77,8 +77,4 @@ def backtest(candles_dataframe, separate_panel_indicators,
         side=long_short_both,
         amount_of_candles=amount_of_candles,
     )
-
-    st.write(portfolio.stats())
-    st.plotly_chart(portfolio.plot())
-    st.plotly_chart(portfolio.plotly())
-    st.write(dir(portfolio))
+    st.session_state.portfolio = portfolio
