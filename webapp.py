@@ -15,7 +15,6 @@ def operator_to_operation(data1, data2, comparison_operator):
         data = data1.gt(data2)
     elif comparison_operator == '<':
         data = data1.lt(data2)
-        st.write(type(data.iloc[-1]))
     elif comparison_operator == '>=':
         data = data1.ge(data2)
     elif comparison_operator == '<=':
@@ -267,7 +266,6 @@ def main():
                         entries.name = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
 
                         candle_dataframe['entries'] = entries
-                        st.write(candle_dataframe)
 
                         combination_operator = st.session_state.all_entries[i][3]
                         if combination_operator == 'AND':
@@ -293,7 +291,6 @@ def main():
                     backtest(
                         candle_dataframe, 
                         st.session_state.separate_panel_indicators,
-                        entries, exits, 
                         timeframe, long_short_both,
                         amount_of_candles=amount_of_candles,
                         sl_start=sl_start, sl_end=sl_end, sl_increment=sl_increment,

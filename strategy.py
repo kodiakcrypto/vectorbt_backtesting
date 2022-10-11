@@ -25,14 +25,14 @@ def calc_ind(candle_dataframe, args_dicts):
 @finlab_crypto.Strategy(separate_panel_indicators=[])
 def strategy(candles_ta_dataframe): 
     # give data to chart
-    figures = {
-        'overlaps': { #plot all decimal data columns other than ohlcv
-            col_name: candles_ta_dataframe[col_name] \
-            for col_name in candles_ta_dataframe.columns \
-                if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
-                and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
-        }
-    }
+    # figures = { 
+    #     # 'overlaps': { #plot all decimal data columns other than ohlcv
+    #     #     col_name: candles_ta_dataframe[col_name] \
+    #     #     for col_name in candles_ta_dataframe.columns \
+    #     #         if col_name not in ['open', 'high', 'low', 'close', 'volume', 'entries', 'exits'] \
+    #     #         and type(candles_ta_dataframe[col_name].iloc[-1]) == np.float64
+    #     # }
+    # }
     # if strategy.separate_panel_indicators != []:
     #     for indicator in strategy.separate_panel_indicators:
     #         figures[indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
@@ -40,10 +40,9 @@ def strategy(candles_ta_dataframe):
     entries = candles_ta_dataframe['entries']
     exits = candles_ta_dataframe['exits']
 
-    return entries, exits, figures
+    return entries, exits#, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
-             entries, exits, 
              timeframe, long_short_both,
              amount_of_candles=1000,
              sl_start=None, sl_end=None, sl_increment=None,
@@ -67,7 +66,6 @@ def backtest(candles_dataframe, separate_panel_indicators,
       _vars['ts_stop'] = np.arange(trail_start, trail_end, trail_increment)
 
     _vars['separate_panel_indicators'] = separate_panel_indicators
-    candles_dataframe = pd.concat([candles_dataframe, entries, exits], axis=1)
 
     portfolio = strategy.backtest(
         candles_dataframe,
