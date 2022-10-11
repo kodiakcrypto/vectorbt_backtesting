@@ -39,7 +39,6 @@ def add_entry_boxes(clean_columns):
     ])
     if len(st.session_state.entries) > 1:
         st.session_state['entries'][-1].append(st.radio('Combine with', ['AND', 'OR'], key=str(randint(0,999999))))
-
 def remove_entry_box():
     st.session_state['entries'].remove(-1)
 
@@ -204,7 +203,7 @@ def main():
                                                     candle_dataframe[backtest_column2], 
                                                     comparison_operator)
                     entries = entries.rename(entry_string)
-                    st.session_state.all_entries.append(entries)
+                    st.session_state['all_entries'].append(entries)
 
 
                 st.write('#### Exit Conditions')
@@ -225,7 +224,7 @@ def main():
                                                   candle_dataframe[backtest_column2], 
                                                   comparison_operator)
                     exits = exits.rename(exit_string)
-                    st.session_state.all_exits.append(exits)
+                    st.session_state['all_exits'].append(exits)
 
 
 
@@ -233,23 +232,23 @@ def main():
 
                 if st.button('Run Backtest'):
 
-                    candle_dataframe['entries'] = st.session_state.all_entries[0]
+                    candle_dataframe['entries'] = st.session_state['all_entries'][0]
                     for i in range(len(st.session_state.entries)):
                         if len(st.session_state.entries[i]) == 4:
                             combination_operator = st.session_state.entries[i][3]
                             if combination_operator == 'AND':
-                                candle_dataframe['entries'] = (candle_dataframe['entries'] & st.session_state.all_entries[i])
+                                candle_dataframe['entries'] = (candle_dataframe['entries'] & st.session_state['all_entries'][i])
                             elif combination_operator == 'OR':
-                                candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state.all_entries[i])
+                                candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state['all_entries'][i])
                     
-                    candle_dataframe['exits'] = st.session_state.all_exits[0]
+                    candle_dataframe['exits'] = st.session_state['all_exits'][0]
                     for i in range(len(st.session_state.exits)):
                         if len(st.session_state.exits[i]) == 4:
                             combination_operator = st.session_state.exits[i][3]
                             if combination_operator == 'AND':
-                                candle_dataframe['exits'] = (st.session_state.all_exits[i] & st.session_state.all_exits[i-1])
+                                candle_dataframe['exits'] = (st.session_state['all_exits'][i] & st.session_state['all_exits'][i-1])
                             elif combination_operator == 'OR':
-                                candle_dataframe['exits'] = (st.session_state.all_exits[i] | st.session_state.all_exits[i-1])
+                                candle_dataframe['exits'] = (st.session_state['all_exits'][i] | st.session_state['all_exits'][i-1])
 
                     backtest(
                         candle_dataframe, 
