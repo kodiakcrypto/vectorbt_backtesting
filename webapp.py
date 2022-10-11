@@ -269,9 +269,9 @@ def main():
 
                         combination_operator = st.session_state.all_entries[i][3]
                         if combination_operator == 'AND':
-                            candle_dataframe['entries'] = (candle_dataframe['entries'] & st.session_state['all_entries'][i])
+                            candle_dataframe['entries'] = np.bitwise_and(candle_dataframe['entries'] & st.session_state['all_entries'][i])
                         elif combination_operator == 'OR':
-                            candle_dataframe['entries'] = (candle_dataframe['entries'] | st.session_state['all_entries'][i])
+                            candle_dataframe['entries'] = np.bitwise_or(candle_dataframe['entries'] | st.session_state['all_entries'][i])
                         
 
                     for i in range(st.session_state.exits):
@@ -283,9 +283,9 @@ def main():
                         candle_dataframe['exits'] = exits
                         combination_operator = st.session_state.all_exits[i][3]
                         if combination_operator == 'AND':
-                            candle_dataframe['exits'] = (candle_dataframe['exits'] & st.session_state['all_exits'][i])
+                            candle_dataframe['exits'] = np.bitwise_and(candle_dataframe['exits'] , st.session_state['all_exits'][i])
                         elif combination_operator == 'OR':
-                            candle_dataframe['exits'] = (candle_dataframe['exits'] | st.session_state['all_exits'][i])
+                            candle_dataframe['exits'] = np.bitwise_or(candle_dataframe['exits'] | st.session_state['all_exits'][i])
  
 
                     backtest(
