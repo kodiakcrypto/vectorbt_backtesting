@@ -79,12 +79,13 @@ def main():
 
             
         if st.button("Go Go Go"):
-            filename = f"{ticker}_{timeframe}_{amount_of_candles}_candles"
             st.session_state['candle_dataframe'] = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
 
     # plot data
-    if st.session_state['candle_dataframe'] is not None:
+    if 'candle_dataframe' in st.session_state:
         with col2:
+            filename = f"{ticker}_{timeframe}_{amount_of_candles}_candles"
+
             candle_dataframe = st.session_state['candle_dataframe']
             clean_columns = [column for column in candle_dataframe.columns \
                                 if column not in ['entries', 'exits'] \
