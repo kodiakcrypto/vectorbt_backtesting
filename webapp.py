@@ -6,9 +6,7 @@ from strategy import calc_ind, backtest
 from candle_fetcher import get_candles
 import xlsxwriter
 from io import BytesIO
-import pandas as pd
 import numpy as np
-from random import randint
 
 # >, <, etc... string to operation on datasets
 def operator_to_operation(data1, data2, comparison_operator):
