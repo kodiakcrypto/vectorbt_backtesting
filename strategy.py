@@ -32,6 +32,7 @@ def strategy(candles_ta_dataframe):
       }
     }
 
+    # TODO FIGURE OUT HOW TO GROUP INDICATORS...
     for col_name in strategy.separate_panel_indicators.columns:
         figures[col_name] = { col_name: strategy.separate_panel_indicators[col_name] }
 

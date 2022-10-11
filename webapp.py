@@ -29,25 +29,27 @@ def operator_to_operation(data1, data2, comparison_operator):
         data = data1.divide(data2)
     return data
 
-def add_entry_boxes(clean_columns):
+def add_entry_boxes(clean_columns, i):
     st.session_state['entries'].append([
-            st.selectbox('Column #1', clean_columns, key=str(randint(0,999999))), \
-            st.selectbox('Comparison', ['>', '<', '>=', '<=', '-', '+','*','/'], key=str(randint(0,999999))), \
-            st.selectbox('Column #2', clean_columns, key=str(randint(0,999999)))
+            st.selectbox('Column #1', clean_columns, key='entry_column1_'+str(i)), \
+            st.selectbox('Comparison', ['>', '<', '>=', '<=', '-', '+','*','/'], key='entry_comparison_'+str(i)), \
+            st.selectbox('Column #2', clean_columns, key='entry_column2_'+str(i))
     ])
     if len(st.session_state.entries) > 1:
-        st.session_state['entries'][-1].append(st.radio('Combine with', ['AND', 'OR'], key=str(randint(0,999999))))
+        st.session_state['entries'][-1].append(st.radio('Combine with', ['AND', 'OR'], key='entry_combiner_'+str(i)))
+    return st.session_state['entries'][-1]
 def remove_entry_box():
     st.session_state['entries'].remove(-1)
 
-def add_exit_boxes(clean_columns):
+def add_exit_boxes(clean_columns, i):
     st.session_state['exits'].append([
-        st.selectbox('Column #1', clean_columns, key=str(randint(0,999999))), \
-        st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key=str(randint(0,999999))), \
-        st.selectbox('Column #2', clean_columns, key=str(randint(0,999999)))
+        st.selectbox('Column #1', clean_columns, key='exit_column1_'+str(i)), \
+        st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='exit_column1_'+str(i)), \
+        st.selectbox('Column #2', clean_columns, key='exit_column1_'+str(i))
     ])
     if len(st.session_state.exits) > 1:
-        st.session_state['exits'][-1].append(st.radio('Combine with', ['AND', 'OR'], key=str(randint(0,999999))))
+        st.session_state['exits'][-1].append(st.radio('Combine with', ['AND', 'OR'], key='exit_combiner_'+str(i)))
+        
 def remove_exit_box():
     st.session_state['exits'].remove(-1)
 
@@ -55,10 +57,10 @@ def main():
     if 'expanded' not in st.session_state:
         st.session_state['expanded'] = False
     if 'entries' not in st.session_state:
-        st.session_state['entries'] = []
+        st.session_state['entries'] = 0
         st.session_state['all_entries'] = []
     if 'exits' not in st.session_state:
-        st.session_state['exits'] = []
+        st.session_state['exits'] = 0
         st.session_state['all_exits'] = []
     
     st.header("Data Downloader")
@@ -194,6 +196,10 @@ def main():
                     backtest_column1 = st.session_state.entries[i][0]
                     comparison_operator = st.session_state.entries[i][1]
                     backtest_column2 = st.session_state.entries[i][2]
+
+
+
+
 
                    
                     entry_string = f"{backtest_column1}_{comparison_operator}_{backtest_column2}"
