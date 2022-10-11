@@ -15,10 +15,12 @@ def calc_ind(candle_dataframe, args_dicts):
         ind_function = getattr(ta, ind_name)
         res = ind_function(**arg_dict)
         if isinstance(res, pd.Series):
-            candle_dataframe = pd.concat([candle_dataframe, res], columns=candle_dataframe.columns+=res.columns, axis=1)
-            indicator_dict[ind_name] = ind_name
+            columns = candle_dataframe.columns.extend(res.columns)
+            candle_dataframe = pd.concat([candle_dataframe, res], columns=columns, axis=1)
+            indicator_dict[ind_name] = [ind_name]
         else:
-            candle_dataframe = pd.concat([candle_dataframe, res], columns=candle_dataframe.columns+=ind_name, axis=1)
+            columns = candle_dataframe.columns.append(ind_name)
+            candle_dataframe = pd.concat([candle_dataframe, res], columns=columns, axis=1)
             indicator_dict[ind_name] = res.columns
     return candle_dataframe, indicator_dict
 
