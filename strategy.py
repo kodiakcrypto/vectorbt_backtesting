@@ -67,8 +67,9 @@ def backtest(candles_dataframe, separate_panel_indicators,
       if trail_start is None: trail_start = 0
       if not trail_increment: trail_increment = round((trail_end - trail_start)/10, 3)
       _vars['ts_stop'] = np.arange(trail_start, trail_end, trail_increment)
-
-    _vars['separate_panel_indicators'] = separate_panel_indicators
+    
+    if len(separate_panel_indicators) > 0:
+        _vars['separate_panel_indicators'] = separate_panel_indicators
 
     portfolio = strategy.backtest(
         candles_dataframe,
