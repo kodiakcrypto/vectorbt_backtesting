@@ -202,7 +202,7 @@ def main():
                     entries = operator_to_operation(candle_dataframe[backtest_column1], 
                                                     candle_dataframe[backtest_column2], 
                                                     comparison_operator)
-                    entries = entries.rename(entry_string)
+                    entries = pd.Series(entries).rename(entry_string)
                     st.session_state['all_entries'].append(entries)
 
 
@@ -223,7 +223,7 @@ def main():
                     exits = operator_to_operation(candle_dataframe[backtest_column1], 
                                                   candle_dataframe[backtest_column2], 
                                                   comparison_operator)
-                    exits = exits.rename(exit_string)
+                    exits = pd.Series(exits).rename(exit_string)
                     st.session_state['all_exits'].append(exits)
 
 
