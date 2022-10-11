@@ -14,9 +14,8 @@ def operator_to_operation(data1, data2, comparison_operator):
     if comparison_operator == '>':
         data = data1.gt(data2)
     elif comparison_operator == '<':
-        st.write(comparison_operator)
         data = data1.lt(data2)
-        st.write(data1, data2, data, data1.lt(data2))
+        st.write(type(data.iloc[-1]))
     elif comparison_operator == '>=':
         data = data1.ge(data2)
     elif comparison_operator == '<=':
