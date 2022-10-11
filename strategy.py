@@ -7,18 +7,19 @@ import numpy as np
 
 def calc_ind(candle_dataframe, args_dicts):
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
-
+    indicator_dict = {}
     for ind_name, arg_dict in args_dicts.copy().items():
         for arg in arg_dict:
             if arg in ("open_", "high", "low", "close", "volume"):
                 args_dicts[ind_name][arg] = candle_dataframe[arg.rstrip("_")]
         ind_function = getattr(ta, ind_name)
         res = ind_function(**arg_dict)
+        indicator_dict[res.name] = res.columns
         candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
-    return candle_dataframe
+    return candle_dataframe, indicator_dict
 
 
-@finlab_crypto.Strategy(separate_panel_indicators=None)
+@finlab_crypto.Strategy(separate_panel_indicators=[])
 def strategy(candles_ta_dataframe): 
     # give data to chart
     figures = {
@@ -31,10 +32,9 @@ def strategy(candles_ta_dataframe):
         }
       }
     }
-
-    # TODO FIGURE OUT HOW TO GROUP INDICATORS...
-    for col_name in strategy.separate_panel_indicators.columns:
-        figures[col_name] = { col_name: strategy.separate_panel_indicators[col_name] }
+    if strategy.separate_panel_indicators != []:
+        for indicator in strategy.separate_panel_indicators:
+            figures['figures'][indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
     entries = candles_ta_dataframe['entries']
     exits = candles_ta_dataframe['exits']
@@ -63,7 +63,7 @@ def backtest(candles_dataframe, separate_panel_indicators,
     if trail_end:
       if trail_start is None: trail_start = 0
       if not trail_increment: trail_increment = round((trail_end - trail_start)/10, 3)
-      _vars['sl_trail'] = np.arange(trail_start, trail_end, trail_increment)
+      _vars['ts_stop'] = np.arange(trail_start, trail_end, trail_increment)
 
     _vars['separate_panel_indicators'] = separate_panel_indicators
     candles_dataframe = pd.concat([candles_dataframe, entries, exits], axis=1)
