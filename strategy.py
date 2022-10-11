@@ -35,9 +35,9 @@ def strategy(candles_ta_dataframe):
         }
       }
     }
-    if strategy.separate_panel_indicators != []:
-        for indicator in strategy.separate_panel_indicators:
-            figures['figures'][indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
+    # if strategy.separate_panel_indicators != []:
+    #     for indicator in strategy.separate_panel_indicators:
+    #         figures['figures'][indicator.name] = {col_name: indicator[col_name] for col_name in indicator.columns}
 
     entries = candles_ta_dataframe['entries']
     exits = candles_ta_dataframe['exits']
