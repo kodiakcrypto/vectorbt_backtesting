@@ -242,7 +242,7 @@ def main():
                     
                 st.session_state.all_entries = []
                 for i in range(st.session_state.entries):
-                    (backtest_column1, comparison_operator, backtest_column2), combination_operator = add_entry_boxes(clean_columns, i)
+                    (backtest_column1, comparison_operator, backtest_column2, combination_operator) = add_entry_boxes(clean_columns, i)
                     st.session_state.all_entries.append([backtest_column1, comparison_operator, backtest_column2, combination_operator])
                 
                 ###################
