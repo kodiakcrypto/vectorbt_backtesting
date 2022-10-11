@@ -35,8 +35,8 @@ def strategy(candles_ta_dataframe, separate_panel_indicators, entries, exits):
     for col_name in separate_panel_indicators.columns:
         figures[col_name] = { col_name: separate_panel_indicators[col_name] }
 
-    entries = candles_ta_dataframe['entries']
-    exits = candles_ta_dataframe['exits']
+    # entries = candles_ta_dataframe['entries']
+    # exits = candles_ta_dataframe['exits']
 
     return entries, exits, figures
 
