@@ -30,7 +30,7 @@ def get_candles(ticker="BTC-USD", timeframe="1d", amount_of_candles=1000):
         '3mo': 129600,
     }
     period = None
-    minutes = str(amount_of_candles * intervals_to_minutes[timeframe])
+    minutes = amount_of_candles * intervals_to_minutes[timeframe]
     #what period is greater than minutes
     for k, v in periods_to_minutes.items():
         if v >= minutes:
