@@ -11,6 +11,7 @@ import numpy as np
 # >, <, etc... string to operation on datasets
 def operator_to_operation(data1, data2, comparison_operator):
     data = None
+    st.write(comparison_operator)
     if comparison_operator == '>':
         data = data1.gt(data2)
     elif comparison_operator == '<':
