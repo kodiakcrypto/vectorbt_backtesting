@@ -56,35 +56,35 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
 
     backtest_boxes = st.expander('Backtest Options', expanded=False)
     with backtest_boxes:
-        # with b1:
-            long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0, key='long_short_both')
-            amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1, key='amount_of_candles')
-        # with b2:
-            sl_start = st.number_input('SL Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='sl_start')
-            sl_end = st.number_input('SL End', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='sl_end')
-            sl_increment = st.number_input('SL Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='sl_increment')
-        # with b3:
-            tp_start = st.number_input('TP Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='tp_start')
-            tp_end = st.number_input('TP End', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='tp_end')
-            tp_increment = st.number_input('TP Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='tp')
-        # with b4:
-            trail_start = st.number_input('Trail Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='trail_start')
-            trail_end = st.number_input('Trail End', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='trail_end')
-            trail_increment = st.number_input('Trail Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='trail_increment')
-        # with c1:
-            # add multi select box to choose dataframe columns to use
-            st.write('Select the columns like ATR and RSI to plot below the chart')
-            columns = st.multiselect('Column Names', clean_columns, key='clean__cols')
-            separate_panel_indicators = candle_dataframe[columns]
+    # with b1:
+        long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0, key='long_short_both')
+        amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1, key='amount_of_candles')
+    # with b2:
+        sl_start = st.number_input('SL Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='sl_start')
+        sl_end = st.number_input('SL End', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='sl_end')
+        sl_increment = st.number_input('SL Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='sl_increment')
+    # with b3:
+        tp_start = st.number_input('TP Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='tp_start')
+        tp_end = st.number_input('TP End', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='tp_end')
+        tp_increment = st.number_input('TP Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='tp')
+    # with b4:
+        trail_start = st.number_input('Trail Start', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='trail_start')
+        trail_end = st.number_input('Trail End', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='trail_end')
+        trail_increment = st.number_input('Trail Increment', value=0.0, min_value=0.0, max_value=0.5, step=0.001, key='trail_increment')
+    # with c1:
+        # add multi select box to choose dataframe columns to use
+        st.write('Select the columns like ATR and RSI to plot below the chart')
+        columns = st.multiselect('Column Names', clean_columns, key='clean__cols')
+        separate_panel_indicators = candle_dataframe[columns]
 
         #select column to use for backtest
         st.write('#### Backtest Entry Conditions')
         # with a1: 
-            backtest_column1 = st.selectbox('Column #1', clean_columns, key='bt_1')
-        # with a2: 
-            comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='bt_2')
-        # with a3: 
-            backtest_column2 = st.selectbox('Column #2', clean_columns, key='bt_3')
+        backtest_column1 = st.selectbox('Column #1', clean_columns, key='bt_1')
+    # with a2: 
+        comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='bt_2')
+    # with a3: 
+        backtest_column2 = st.selectbox('Column #2', clean_columns, key='bt_3')
         
         #compare these dataframes
         entries = None
@@ -110,12 +110,12 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
 
 
         st.write('#### Exit Entry Conditions')
-        # with z1: 
-            ex_backtest_column1 = st.selectbox('Column #1', clean_columns, key='ex_1')
-        # with z2: 
-            ex_comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='ex_2')
-        # with z3: 
-            ex_backtest_column2 = st.selectbox('Column #2', clean_columns, key='ex_3')
+    # with z1: 
+        ex_backtest_column1 = st.selectbox('Column #1', clean_columns, key='ex_1')
+    # with z2: 
+        ex_comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='ex_2')
+    # with z3: 
+        ex_backtest_column2 = st.selectbox('Column #2', clean_columns, key='ex_3')
         
         #compare these dataframes
         exits = None
