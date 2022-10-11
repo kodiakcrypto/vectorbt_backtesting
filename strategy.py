@@ -75,7 +75,7 @@ def backtest(candles_dataframe, separate_panel_indicators,
     portfolio = strategy.backtest(
         candles_dataframe,
         _vars,
-        plot=False,
+        plot=True,
         size=1,
         init_cash='auto', 
         freq=timeframe, 
