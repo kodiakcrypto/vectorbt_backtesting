@@ -41,8 +41,8 @@ def strategy(candles_ta_dataframe):
 
     # entries = (candles_ta_dataframe['entries']   )
     # exits = (candles_ta_dataframe['exits']   ) 
-    entries = (candles_ta_dataframe.close > candles_ta_dataframe.close.shift(20) )
-    exits = (candles_ta_dataframe.close < candles_ta_dataframe.close.shift(20))
+    entries = None#(candles_ta_dataframe.close > candles_ta_dataframe.close.shift(20) )
+    exits = None#(candles_ta_dataframe.close < candles_ta_dataframe.close.shift(20))
     return entries, exits, {}#, figures
 
 def backtest(candles_dataframe, separate_panel_indicators, 
