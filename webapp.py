@@ -34,6 +34,7 @@ def operator_to_operation(data1, data2, comparison_operator):
 def main():
     st.header("Data Downloader")
     candle_dataframe = None
+    expanded = False
     col1, col2 = st.columns([2, 3])
 
     with col1:
