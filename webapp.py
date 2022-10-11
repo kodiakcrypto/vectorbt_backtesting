@@ -30,10 +30,10 @@ def operator_to_operation(data1, data2, comparison_operator):
         data = data1 / data2
     return data
 
-
 def main():
+    if 'expanded' not in st.session_state:
+        st.session_state['expanded'] = False
     st.header("Data Downloader")
-    candle_dataframe = None
     col1, col2 = st.columns([2, 3])
 
     with col1:
@@ -80,11 +80,12 @@ def main():
             
         if st.button("Go Go Go"):
             filename = f"{ticker}_{timeframe}_{amount_of_candles}_candles"
-            candle_dataframe = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
+            st.session_state['candle_dataframe'] = calc_ind(get_candles(ticker, timeframe, amount_of_candles), args_dicts)
 
     # plot data
-    if candle_dataframe is not None:
+    if st.session_state['candle_dataframe'] is not None:
         with col2:
+            candle_dataframe = st.session_state['candle_dataframe']
             clean_columns = [column for column in candle_dataframe.columns \
                                 if column not in ['entries', 'exits'] \
                                     and type(candle_dataframe[column].iloc[-1]) == np.float64]
@@ -115,8 +116,9 @@ def main():
                 key="xlsx",
             )
 
-            backtest_boxes = st.expander('Backtest Options', expanded=False)
+            backtest_boxes = st.expander('Backtest Options', expanded=st.session_state['expanded'])
             with backtest_boxes:
+                st.session_state['expanded'] = True
 
                 long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0, key='long_short_both')
                 amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1, key='amount_of_candles')
