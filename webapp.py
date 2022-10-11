@@ -12,21 +12,21 @@ from random import randint
 
 def operator_to_operation(data1, data2, comparison_operator):
     if comparison_operator == '>':
-        data = data1 > data2
+        data = data1.gt(data2)
     elif comparison_operator == '<':
-        data = data1 < data2
+        data = data1.lt(data2)
     elif comparison_operator == '>=':
-        data = data1 >= data2
+        data = data1.ge(data2)
     elif comparison_operator == '<=':
-        data = (data1 <= data2)
+        data = data1.le(data2)
     elif comparison_operator == '-':
-        data = (data1 - data2)
+        data = data1.subtract(data2)
     elif comparison_operator == '+':
-        data = (data1 + data2)
+        data = data1.add(data2)
     elif comparison_operator == '*':
-        data = (data1 * data2)
+        data = data1.multiply(data2)
     elif comparison_operator == '/':
-        data = (data1 / data2)
+        data = data1.divide(data2)
     return data
 
 def add_entry_boxes(clean_columns):
