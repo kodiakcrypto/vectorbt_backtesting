@@ -1,15 +1,11 @@
 import pandas_ta as ta
 import streamlit as st
-import xlsxwriter
-from io import BytesIO
 
 import finlab_crypto
 import pandas as pd
 import numpy as np
 
-def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
-    expanded = False
-    # b1, b2, b3, b4, c1, a1, a2, a3, z1, z2, z3 = st.columns([1,1,1,1,2,1,1,1,1,1,1])
+def calc_ind(filename, candle_dataframe, timeframe,args_dicts):
     candle_dataframe.index = candle_dataframe.index.tz_localize(None)
 
     for ind_name, arg_dict in args_dicts.copy().items():
@@ -19,139 +15,7 @@ def calc_ind(filename, candle_dataframe, timeframe, col, args_dicts):
         ind_function = getattr(ta, ind_name)
         res = ind_function(**arg_dict)
         candle_dataframe = pd.concat([candle_dataframe, res], axis=1)
-
-    clean_columns = [column for column in candle_dataframe.columns \
-                if column not in ['entries', 'exits'] \
-                    and type(candle_dataframe[column].iloc[-1]) == np.float64]
-                    
-    # plot data
-    with col:
-        st.write(candle_dataframe)
-
-        st.download_button(
-            label="⬇️ CSV",
-            data=candle_dataframe.to_csv().encode("utf-8"),
-            file_name=f"{filename}.csv",
-            mime="text/csv",
-            help="Download CSV file",
-            key="csv",
-        )
-
-        output = BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
-
-        worksheet.write('A1', filename)
-        workbook.close()
-
-        st.download_button(
-            label="⬇️ XLSX",
-            data=output.getvalue(),
-            file_name=f"{filename}.xlsx",
-            mime="application/vnd.ms-excel",
-            help="Download XLSX Excel file",
-            key="xlsx",
-        )
-
-        backtest_boxes = st.expander('Backtest Options', expanded=expanded)
-        with backtest_boxes:
-            expanded = True
-        # with b1:
-            long_short_both = st.selectbox('Long/Short/Both', ['long', 'short', 'both'], index=0, key='long_short_both')
-            amount_of_candles = st.number_input('# of Candles on chart', value=1000, min_value=1, max_value=10000, step=1, key='amount_of_candles')
-        # with b2:
-            sl_start = st.number_input('SL Start', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='sl_start')
-            sl_end = st.number_input('SL End', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='sl_end')
-            sl_increment = st.number_input('SL Increment', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='sl_increment')
-        # with b3:
-            tp_start = st.number_input('TP Start', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='tp_start')
-            tp_end = st.number_input('TP End', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='tp_end')
-            tp_increment = st.number_input('TP Increment', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='tp')
-        # with b4:
-            trail_start = st.number_input('Trail Start', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='trail_start')
-            trail_end = st.number_input('Trail End', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='trail_end')
-            trail_increment = st.number_input('Trail Increment', value=0.000, min_value=0.000, max_value=0.5, step=0.001, key='trail_increment')
-        # with c1:
-            # add multi select box to choose dataframe columns to use
-            st.write('Select the columns like ATR and RSI to plot below the chart')
-            columns = st.multiselect('Column Names', clean_columns, key='clean_cols')
-            separate_panel_indicators = candle_dataframe[columns]
-
-            #select column to use for backtest
-            st.write('#### Backtest Entry Conditions')
-            # with a1: 
-            backtest_column1 = st.selectbox('Column #1', clean_columns, key='bt_1')
-        # with a2: 
-            comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='bt_2')
-        # with a3: 
-            backtest_column2 = st.selectbox('Column #2', clean_columns, key='bt_3')
-            
-            #compare these dataframes
-            entries = None
-            data1, data2 = candle_dataframe[backtest_column1], candle_dataframe[backtest_column2]
-            if comparison_operator == '>':
-                entries = np.greater(data1, data2)
-            elif comparison_operator == '<':
-                entries = np.less(data1, data2)
-            elif comparison_operator == '>=':
-                entries = np.greater_equal(data1, data2)
-            elif comparison_operator == '<=':
-                entries = np.less_equal(data1, data2)
-            elif comparison_operator == '==':
-                entries = np.equal(data1, data2)
-            elif comparison_operator == '-':
-                entries = data1 - data2
-            elif comparison_operator == '+':
-                entries = data1 + data2
-            elif comparison_operator == '*':
-                entries = data1 * data2
-            elif comparison_operator == '/':
-                entries = data1 / data2
-
-
-            st.write('#### Exit Entry Conditions')
-        # with z1: 
-            ex_backtest_column1 = st.selectbox('Column #1', clean_columns, key='ex_1')
-        # with z2: 
-            ex_comparison_operator = st.selectbox('Comparison', ['>', '<', '>=', '<=', '==', '-', '+','*','/'], key='ex_2')
-        # with z3: 
-            ex_backtest_column2 = st.selectbox('Column #2', clean_columns, key='ex_3')
-            
-            #compare these dataframes
-            exits = None
-            data1, data2 = candle_dataframe[ex_backtest_column1], candle_dataframe[ex_backtest_column2]
-            if ex_comparison_operator == '>':
-                exits = np.greater(data1, data2)
-            elif ex_comparison_operator == '<':
-                exits = np.less(data1, data2)
-            elif ex_comparison_operator == '>=':
-                exits = np.greater_equal(data1, data2)
-            elif ex_comparison_operator == '<=':
-                exits = np.less_equal(data1, data2)
-            elif ex_comparison_operator == '==':
-                exits = np.equal(data1, data2)
-            elif ex_comparison_operator == '-':
-                exits = data1 - data2
-            elif ex_comparison_operator == '+':
-                exits = data1 + data2
-            elif ex_comparison_operator == '*':
-                exits = data1 * data2
-            elif ex_comparison_operator == '/':
-                exits = data1 / data2
-
-
-
-
-            if st.button('Run Backtest'):
-                backtest(
-                    candle_dataframe, separate_panel_indicators,
-                    timeframe, long_short_both,
-                    amount_of_candles=amount_of_candles,
-                    sl_start=sl_start, sl_end=sl_end, sl_increment=sl_increment,
-                    tp_start=tp_start, tp_end=tp_end, tp_increment=tp_increment,
-                    trail_start=trail_start, trail_end=trail_end, trail_increment=trail_increment
-                )
-
+    return candle_dataframe
 
 
 @finlab_crypto.Strategy()
@@ -176,7 +40,8 @@ def strategy(candles_ta_dataframe, separate_panel_indicators):
 
     return entries, exits, figures
 
-def backtest(candles_dataframe, separate_panel_indicators, timeframe, long_short_both,
+def backtest(candles_dataframe, entries, exits, 
+             separate_panel_indicators, timeframe, long_short_both,
              amount_of_candles=1000,
              sl_start=None, sl_end=None, sl_increment=None,
              tp_start=None, tp_end=None, tp_increment=None,
